@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AmazonClone.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+32cd61d0ea2cfb41fc3499ea9afe95b1dd8fd65b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a7538463c953950fce55db27f1d9f85b9101e747")]
 [assembly: System.Reflection.AssemblyProductAttribute("AmazonClone.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AmazonClone.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -14,3 +14,5 @@ D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\refint\AmazonClone.Infrastructure.dll
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonClone.Infrastructure.pdb
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\ref\AmazonClone.Infrastructure.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\bin\Debug\net8.0\AmazonClone.Infrastructure.runtimeconfig.json
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonClone.Infrastructure.genruntimeconfig.cache
