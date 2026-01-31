@@ -1,10 +1,11 @@
+using AmazonClone.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
 namespace AmazonClone.Application.Services;
 
-public class EmailService
+public class EmailService: IEmailService
 {
     private readonly IConfiguration _config;
 
