@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmazonClone.Domain", "AmazonClone.Domain\AmazonClone.Domain.csproj", "{2652BF24-EC6B-473B-AFB8-D26991BFD84B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmazonClone.Application", "AmazonClone.Application\AmazonClone.Application.csproj", "{4BB3F888-6B57-4C14-A080-750F88508336}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmazonClone.Infrastructure", "AmazonClone.Infrastructure\AmazonClone.Infrastructure.csproj", "{32314DFB-5C20-4903-9730-BC131780AFD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmazonClone.Api", "AmazonClone.Api\AmazonClone.Api.csproj", "{A3CFCC45-C3B1-4F15-8024-E8E215EBDB43}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2652BF24-EC6B-473B-AFB8-D26991BFD84B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2652BF24-EC6B-473B-AFB8-D26991BFD84B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2652BF24-EC6B-473B-AFB8-D26991BFD84B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2652BF24-EC6B-473B-AFB8-D26991BFD84B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BB3F888-6B57-4C14-A080-750F88508336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BB3F888-6B57-4C14-A080-750F88508336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BB3F888-6B57-4C14-A080-750F88508336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BB3F888-6B57-4C14-A080-750F88508336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32314DFB-5C20-4903-9730-BC131780AFD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32314DFB-5C20-4903-9730-BC131780AFD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32314DFB-5C20-4903-9730-BC131780AFD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32314DFB-5C20-4903-9730-BC131780AFD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3CFCC45-C3B1-4F15-8024-E8E215EBDB43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3CFCC45-C3B1-4F15-8024-E8E215EBDB43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3CFCC45-C3B1-4F15-8024-E8E215EBDB43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3CFCC45-C3B1-4F15-8024-E8E215EBDB43}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
