@@ -1,0 +1,16 @@
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\bin\Debug\net8.0\AmazonClone.Application.deps.json
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\bin\Debug\net8.0\AmazonClone.Application.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\bin\Debug\net8.0\AmazonClone.Application.pdb
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\bin\Debug\net8.0\AmazonClone.Domain.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\bin\Debug\net8.0\AmazonClone.Domain.pdb
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\AmazonClone.Application.csproj.AssemblyReference.cache
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\AmazonClone.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\AmazonClone.Application.AssemblyInfoInputs.cache
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\AmazonClone.Application.AssemblyInfo.cs
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\AmazonClone.Application.csproj.CoreCompileInputs.cache
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\AmazonClone.Application.sourcelink.json
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\AmazonCl.5461DF8B.Up2Date
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\AmazonClone.Application.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\refint\AmazonClone.Application.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\AmazonClone.Application.pdb
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\ref\AmazonClone.Application.dll

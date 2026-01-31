@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AmazonClone.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c15d8f03a59007050cc4e21c256deeadffcbb98")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47a0bc1e9e45b974ce9bbfd80518fbb03a5f51f7")]
 [assembly: System.Reflection.AssemblyProductAttribute("AmazonClone.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AmazonClone.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,12 @@
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\bin\Debug\net8.0\AmazonClone.Domain.deps.json
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\bin\Debug\net8.0\AmazonClone.Domain.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\bin\Debug\net8.0\AmazonClone.Domain.pdb
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\AmazonClone.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\AmazonClone.Domain.AssemblyInfoInputs.cache
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\AmazonClone.Domain.AssemblyInfo.cs
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\AmazonClone.Domain.csproj.CoreCompileInputs.cache
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\AmazonClone.Domain.sourcelink.json
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\AmazonClone.Domain.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\refint\AmazonClone.Domain.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\AmazonClone.Domain.pdb
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\ref\AmazonClone.Domain.dll

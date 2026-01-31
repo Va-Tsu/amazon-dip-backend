@@ -1,0 +1,16 @@
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\bin\Debug\net8.0\AmazonClone.Infrastructure.deps.json
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\bin\Debug\net8.0\AmazonClone.Infrastructure.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\bin\Debug\net8.0\AmazonClone.Infrastructure.pdb
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\bin\Debug\net8.0\AmazonClone.Domain.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\bin\Debug\net8.0\AmazonClone.Domain.pdb
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonClone.Infrastructure.csproj.AssemblyReference.cache
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonClone.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonClone.Infrastructure.AssemblyInfoInputs.cache
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonClone.Infrastructure.AssemblyInfo.cs
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonClone.Infrastructure.csproj.CoreCompileInputs.cache
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonClone.Infrastructure.sourcelink.json
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonCl.D2040506.Up2Date
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonClone.Infrastructure.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\refint\AmazonClone.Infrastructure.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\AmazonClone.Infrastructure.pdb
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Infrastructure\obj\Debug\net8.0\ref\AmazonClone.Infrastructure.dll

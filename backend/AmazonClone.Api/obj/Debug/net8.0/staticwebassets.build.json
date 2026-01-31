@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "7/IgFWwapLWgaERYM9jNXbYQihsis78cN7TLCpptlfE=",
+  "Source": "AmazonClone.Api",
+  "BasePath": "_content/AmazonClone.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
