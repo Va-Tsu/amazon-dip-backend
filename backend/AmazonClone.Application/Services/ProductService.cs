@@ -41,6 +41,15 @@ public class ProductService : IProductService
             .ToListAsync();
     }
 
+    public async Task<List<Product>> GetByCountryIdAsync(int countryId)
+    {
+        return await _dbContext.Products
+            .Include(p => p.Category)
+            .Include(p => p.Country)
+            .Where(p => p.CountryId == countryId)
+            .ToListAsync();
+    }
+
     public async Task<List<Product>> SearchAsync(string query)
     {
         return await _dbContext.Products
