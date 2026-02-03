@@ -84,6 +84,8 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+builder.Services.AddScoped<IProductService, ProductService>();
+
 
 
 var app = builder.Build();
