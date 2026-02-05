@@ -17,10 +17,7 @@ RUN dotnet restore AmazonClone.sln
 COPY . .
 
 # Publish API
-RUN dotnet publish AmazonClone.Api/AmazonClone.Api.csproj \
-    -c Release \
-    -o /app/publish \
-
+RUN dotnet publish AmazonClone.Api/AmazonClone.Api.csproj -c Release -o /app/publish
 
 # -------- RUNTIME STAGE --------
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
