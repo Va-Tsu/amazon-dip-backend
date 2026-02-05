@@ -20,7 +20,6 @@ COPY . .
 RUN dotnet publish AmazonClone.Api/AmazonClone.Api.csproj \
     -c Release \
     -o /app/publish \
-    --no-restore
 
 
 # -------- RUNTIME STAGE --------
