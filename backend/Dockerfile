@@ -1,24 +1,33 @@
-# Встановлюємо .NET SDK
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+# -------- BUILD STAGE --------
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
 
+# Копіюємо solution і всі csproj
+COPY AmazonClone.sln ./
+
+COPY AmazonClone.Api/AmazonClone.Api.csproj AmazonClone.Api/
+COPY AmazonClone.Application/AmazonClone.Application.csproj AmazonClone.Application/
+COPY AmazonClone.Domain/AmazonClone.Domain.csproj AmazonClone.Domain/
+COPY AmazonClone.Infrastructure/AmazonClone.Infrastructure.csproj AmazonClone.Infrastructure/
+
+# Restore
+RUN dotnet restore AmazonClone.sln
+
+# Копіюємо все інше
+COPY . .
+
+# Publish API
+RUN dotnet publish AmazonClone.Api/AmazonClone.Api.csproj \
+    -c Release \
+    -o /app/publish \
+    --no-restore
+
+
+# -------- RUNTIME STAGE --------
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
-# Копіюємо csproj та відновлюємо залежності
-COPY *.csproj ./
-RUN dotnet restore
+COPY --from=build /app/publish .
 
-# Копіюємо решту файлів
-COPY . ./
-
-# Будуємо проект
-RUN dotnet build -c Release -o /app/build
-
-# Створюємо runtime образ
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
-WORKDIR /app
-COPY --from=build /app/build .
-
-EXPOSE 5000
-
-# Запуск API
-CMD ["dotnet", "MyApi.dll"]
+EXPOSE 80
+ENTRYPOINT ["dotnet", "AmazonClone.Api.dll"]
