@@ -1,4 +1,4 @@
-## 1. Етап збірки (SDK 8.0)
+# 1. Етап збірки (SDK 8.0)
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
@@ -14,7 +14,7 @@ RUN dotnet restore "AmazonClone.sln"
 # 3. Копіюємо ВЕСЬ код
 COPY . .
 
-# --- Крок-милиця (Вносимо правки ПІСЛЯ копіювання коду) ---
+# --- Крок-милиця (Правки після копіювання) ---
 
 # Додаємо пакет EF Core потрібної версії
 RUN dotnet add "AmazonClone.Application/AmazonClone.Application.csproj" package Microsoft.EntityFrameworkCore --version 8.0.23
@@ -23,12 +23,12 @@ RUN dotnet add "AmazonClone.Application/AmazonClone.Application.csproj" package 
 RUN dotnet add "AmazonClone.Application/AmazonClone.Application.csproj" reference "AmazonClone.Infrastructure/AmazonClone.Infrastructure.csproj"
 
 # 4. Збираємо все рішення
-# Використовуємо NoWarn без лапок, розділяючи коди комами (стандарт для CLI)
-RUN dotnet build "AmazonClone.sln" -c Release /p:NoWarn=NU1605,CS8618,CS0114
+# Використовуємо одинарні лапки для захисту спецсимволів від Bash
+RUN dotnet build "AmazonClone.sln" -c Release '/p:NoWarn=NU1605;CS8618;CS0114'
 
 # 5. Публікуємо API
 WORKDIR "/src/AmazonClone.Api"
-RUN dotnet publish "AmazonClone.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false /p:NoWarn=NU1605,CS8618,CS0114
+RUN dotnet publish "AmazonClone.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false '/p:NoWarn=NU1605;CS8618;CS0114'
 
 # 6. Етап запуску (Runtime)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
