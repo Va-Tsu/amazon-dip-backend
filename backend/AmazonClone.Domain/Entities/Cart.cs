@@ -5,7 +5,7 @@ namespace AmazonClone.Domain.Entities;
 public class Cart
 {
     public Guid Id { get; set;}
-    public Guid? UserId { get;set ;}
+    public string? IdentityUserId { get;set ;}
     public string? SessionId { get;set;}
     public List<CartItem> Items { get; set; } = new();
 
