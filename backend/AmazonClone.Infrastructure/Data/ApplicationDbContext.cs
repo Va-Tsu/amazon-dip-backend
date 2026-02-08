@@ -26,13 +26,13 @@ public class ApplicationDbContext: IdentityDbContext<IdentityUser>
         
         builder.Entity<Product>()
             .HasOne(p => p.Category)
-            .WithMany()
+            .WithMany(p => p.Products)
             .HasForeignKey(p => p.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
         
         builder.Entity<Product>()
             .HasOne(p => p.Country)
-            .WithMany()
+            .WithMany(p=>p.Products)
             .HasForeignKey(p => p.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
 
