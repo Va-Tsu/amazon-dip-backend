@@ -9,10 +9,14 @@ COPY ["AmazonClone.Application/AmazonClone.Application.csproj", "AmazonClone.App
 COPY ["AmazonClone.Domain/AmazonClone.Domain.csproj", "AmazonClone.Domain/"]
 COPY ["AmazonClone.Infrastructure/AmazonClone.Infrastructure.csproj", "AmazonClone.Infrastructure/"]
 
-# --- Крок-милиця для виправлення помилок розробників ---
-# Примусово додаємо EntityFrameworkCore в проект Application, 
-# бо ProductService.cs його вимагає, а в csproj його забули додати.
-RUN dotnet add "AmazonClone.Application/AmazonClone.Application.csproj" package Microsoft.EntityFrameworkCore
+# --- Крок-милиця для виправлення архітектурних помилок ---
+
+# Додаємо пакет EF Core конкретної версії 8.x (сумісної з вашим SDK)
+RUN dotnet add "AmazonClone.Application/AmazonClone.Application.csproj" package Microsoft.EntityFrameworkCore --version 8.0.0
+
+# ПРИМУСОВО пов'язуємо Application з Infrastructure. 
+# Це виправить помилку "Infrastructure does not exist in the namespace AmazonClone"
+RUN dotnet add "AmazonClone.Application/AmazonClone.Application.csproj" reference "AmazonClone.Infrastructure/AmazonClone.Infrastructure.csproj"
 
 # 3. Відновлюємо залежності
 RUN dotnet restore "AmazonClone.sln"
@@ -20,7 +24,7 @@ RUN dotnet restore "AmazonClone.sln"
 # 4. Копіюємо решту коду
 COPY . .
 
-# 5. Збираємо все рішення разом, щоб правильно розпізнати зв'язки
+# 5. Збираємо все рішення
 RUN dotnet build "AmazonClone.sln" -c Release
 
 # 6. Публікуємо саме проект API
