@@ -23,12 +23,11 @@ RUN dotnet add "AmazonClone.Application/AmazonClone.Application.csproj" package 
 RUN dotnet add "AmazonClone.Application/AmazonClone.Application.csproj" reference "AmazonClone.Infrastructure/AmazonClone.Infrastructure.csproj"
 
 # 4. Збираємо все рішення
-# Використовуємо одинарні лапки для захисту спецсимволів від Bash
-RUN dotnet build "AmazonClone.sln" -c Release '/p:NoWarn=NU1605;CS8618;CS0114'
+RUN dotnet build "AmazonClone.sln" -c Release -p:NoWarn="NU1605;CS8618;CS0114"
 
 # 5. Публікуємо API
 WORKDIR "/src/AmazonClone.Api"
-RUN dotnet publish "AmazonClone.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false '/p:NoWarn=NU1605;CS8618;CS0114'
+RUN dotnet publish "AmazonClone.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false -p:NoWarn="NU1605;CS8618;CS0114"
 
 # 6. Етап запуску (Runtime)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
