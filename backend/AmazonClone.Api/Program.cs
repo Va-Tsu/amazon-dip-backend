@@ -54,6 +54,7 @@ builder.Services.AddControllers()
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     {
+        options.User.RequireUniqueEmail = true;
         options.SignIn.RequireConfirmedEmail = true;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
