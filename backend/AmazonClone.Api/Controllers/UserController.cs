@@ -37,19 +37,26 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] User user)
+    public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
         var identityUser = new IdentityUser
         {
-            UserName = user.Username,
-            Email = user.Email
+            UserName = registerDto.Email,
+            Email = registerDto.Email
         };
 
-        var result = await _userManager.CreateAsync(identityUser, "P@ssw0rd");
+        var result = await _userManager.CreateAsync(identityUser,registerDto.Password );
         if (!result.Succeeded)
             return BadRequest(result.Errors);
 
-        user.IdentityUserId = identityUser.Id;
+        var user = new User
+        {
+            FullName = registerDto.FullName,
+            Email = registerDto.Email,
+            IdentityUserId = identityUser.Id
+        };
+
+        
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
 
@@ -82,7 +89,7 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        var user = await _userManager.FindByNameAsync(loginDto.Username);
+        var user = await _userManager.FindByEmailAsync(loginDto.Email);
         if (user == null)
             return Unauthorized("Invalid credentials");
 
