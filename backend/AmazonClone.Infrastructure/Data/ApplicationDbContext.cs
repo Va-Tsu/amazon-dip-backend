@@ -19,6 +19,9 @@ public class ApplicationDbContext: IdentityDbContext<IdentityUser>
     public DbSet<Country> Countries { get; set; }
     public DbSet<Cart>Carts{ get; set; }
     public DbSet<CartItem> CartItems { get; set; }
+    
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -36,17 +39,19 @@ public class ApplicationDbContext: IdentityDbContext<IdentityUser>
             .HasForeignKey(p => p.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<Cart>()
-            .HasMany(c => c.Items)
-            .WithOne(i => i.Cart)
+        builder.Entity<CartItem>()
+            .HasOne(c => c.Cart)
+            .WithMany(i=>i.Items)
             .HasForeignKey(i => i.CartId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.Entity<CartItem>()
-            .HasOne(i=>i.Product)
-            .WithMany()
-            .HasForeignKey(i => i.ProductId)
-            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Order>()
+            .HasMany(c => c.Items)
+            .WithOne()
+            .HasForeignKey(c => c.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
     }
     
 }
