@@ -1,0 +1,14 @@
+using AmazonClone.Domain.Enums;
+
+namespace AmazonClone.Domain.Entities;
+
+public class Order
+{
+    public Guid Id { get; set; }
+    public string IdentityUserId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public OrderStatus Status{ get; set; }
+    public decimal TotalPrice { get; set; }
+    
+    public List<OrderItem> Items { get; set; } 
+}
