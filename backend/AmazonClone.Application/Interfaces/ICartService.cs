@@ -4,7 +4,10 @@ namespace AmazonClone.Application.Interfaces;
 
 public interface ICartService
 {
-    Task<Cart?> GetOrCreateCartAsync(string identityUserId);
-    Task AddProductAync(string identityUserId, Guid productId, int quantity);
+    Task<Cart?> GetMyCartAsync(string identityUserId);
+    Task AddItemAsync(string identityUserId, Guid productId, int quantity);
+    Task UpdateItemAsync(string identityUserId, Guid cartItemId, int quantity);
+    Task RemoveItemAsync(string identityUserId, Guid cartItemId);
+    Task ClearAsync(string identityUserId);
     
 }
