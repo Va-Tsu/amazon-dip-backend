@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AmazonClone.Domain\AmazonClone.Domain.csproj" />
+    <ProjectReference Include="..\AmazonClone.Infrastructure\AmazonClone.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

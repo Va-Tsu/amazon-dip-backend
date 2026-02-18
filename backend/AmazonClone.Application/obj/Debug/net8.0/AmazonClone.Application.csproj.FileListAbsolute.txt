@@ -14,3 +14,5 @@ D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\Am
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\refint\AmazonClone.Application.dll
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\AmazonClone.Application.pdb
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\obj\Debug\net8.0\ref\AmazonClone.Application.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\bin\Debug\net8.0\AmazonClone.Infrastructure.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Application\bin\Debug\net8.0\AmazonClone.Infrastructure.pdb

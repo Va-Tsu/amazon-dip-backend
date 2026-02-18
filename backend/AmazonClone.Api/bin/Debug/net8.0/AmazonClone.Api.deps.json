@@ -1063,6 +1063,7 @@
       "AmazonClone.Application/1.0.0": {
         "dependencies": {
           "AmazonClone.Domain": "1.0.0",
+          "AmazonClone.Infrastructure": "1.0.0",
           "Microsoft.Extensions.Configuration": "9.0.12",
           "SendGrid": "9.29.3"
         },
