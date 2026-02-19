@@ -107,7 +107,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SocialNetwork API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AmazonClone API V1");
         c.RoutePrefix = string.Empty; // Swagger at root URL: http://localhost:5000/
     });
 }
