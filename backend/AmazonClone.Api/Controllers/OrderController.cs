@@ -21,23 +21,23 @@ public class OrderController : ControllerBase
     [HttpPost("create")]
     public async Task<ActionResult> Create(List<OrderItem> orderItems)
     {
-        var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var order = await _orderService.CreateAsync(identityUserId, orderItems);
+        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var order = await _orderService.CreateAsync(UserId, orderItems);
         return Ok(order);
     }
 
     [HttpGet]
     public async Task<IActionResult> MyOrders()
     {
-        var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return Ok(await _orderService.GetMyOrdersAsync(identityUserId));
+        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Ok(await _orderService.GetMyOrdersAsync(UserId));
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult> Order(Guid id)
     {
-        var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var order = await _orderService.GetByIdAsync(id, identityUserId);
+        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var order = await _orderService.GetByIdAsync(id, UserId);
         if (order == null)
         {
             return NotFound();

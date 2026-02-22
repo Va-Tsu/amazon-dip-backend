@@ -27,24 +27,24 @@ public class CartController : ControllerBase
     [HttpGet]
     public async Task<ActionResult> Get()
     {
-        var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return Ok(await _cartService.GetMyCartAsync(identityUserId));
+        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Ok(await _cartService.GetMyCartAsync(UserId));
     }
 
     [Authorize]
     [HttpPost("add")]
     public async Task<IActionResult> AddItem(CartItem cartItem)
     {
-        var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        await _cartService.AddItemAsync(identityUserId, cartItem.ProductId, cartItem.Quantity);
+        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        await _cartService.AddItemAsync(UserId, cartItem.ProductId, cartItem.Quantity);
         return Ok();
     }
 
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(Guid itemId, int quantity)
     {
-        var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        await _cartService.UpdateItemAsync(identityUserId, itemId, quantity);
+        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        await _cartService.UpdateItemAsync(UserId, itemId, quantity);
         return Ok();
         
     }
@@ -52,16 +52,16 @@ public class CartController : ControllerBase
     [HttpDelete("remove/{id}")]
     public async Task<IActionResult> Remove(Guid itemId)
     {
-        var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        await _cartService.RemoveItemAsync(identityUserId, itemId);
+        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        await _cartService.RemoveItemAsync(UserId, itemId);
         return Ok();
     }
 
     [HttpDelete("clear")]
     public async Task<IActionResult> Clear()
     {
-        var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        await _cartService.ClearAsync(identityUserId);
+        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        await _cartService.ClearAsync(UserId);
         return Ok();
     }
 }
