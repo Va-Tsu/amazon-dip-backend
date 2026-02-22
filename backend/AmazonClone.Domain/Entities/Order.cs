@@ -5,7 +5,7 @@ namespace AmazonClone.Domain.Entities;
 public class Order
 {
     public Guid Id { get; set; }
-    public string IdentityUserId { get; set; }
+    public string UserId { get; set; }
     public DateTime CreatedAt { get; set; }
     public OrderStatus Status{ get; set; }
     public decimal TotalPrice { get; set; }
