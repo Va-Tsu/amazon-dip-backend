@@ -15,7 +15,7 @@ public class OrderService : IOrderService
         _dbContext = dbContext;
     }
     
-    public async Task<Order> CreateAsync(string identityUserId, List<OrderItem> orderItems)
+    public async Task<Order> CreateAsync(string UserId, List<OrderItem> orderItems)
     {
         var productIds = orderItems.Select(i => i.ProductId).ToList();
         var products = await _dbContext.Products
@@ -24,7 +24,7 @@ public class OrderService : IOrderService
         var order = new Order
         {
             Id = Guid.NewGuid(),
-            IdentityUserId = identityUserId,
+            UserId = UserId,
             CreatedAt = DateTime.UtcNow,
             Status = OrderStatus.Pending,
             Items = new List<OrderItem>()
@@ -55,19 +55,19 @@ public class OrderService : IOrderService
 
     }
 
-    public async Task<List<Order>> GetMyOrdersAsync(string identityUserId)
+    public async Task<List<Order>> GetMyOrdersAsync(string UserId)
     {
         return await _dbContext.Orders.
-            Where(o=>o.IdentityUserId == identityUserId)
+            Where(o=>o.UserId == UserId)
             .Include(o=>o.Items)
             .OrderByDescending(o=>o.CreatedAt)
             .ToListAsync();
     }
 
-    public async Task<Order?> GetByIdAsync(Guid orderId, string identityUserId)
+    public async Task<Order?> GetByIdAsync(Guid orderId, string UserId)
     {
         return await _dbContext.Orders
             .Include(o=>o.Items)
-            .FirstOrDefaultAsync(o=>o.Id == orderId && o.IdentityUserId == identityUserId);
+            .FirstOrDefaultAsync(o=>o.Id == orderId && o.UserId == UserId);
     }
 }

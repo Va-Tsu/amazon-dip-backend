@@ -15,11 +15,11 @@ public class CartService: ICartService
     }
 
 
-    public async Task<Cart?> GetMyCartAsync(string identityUserId)
+    public async Task<Cart?> GetMyCartAsync(string UserId)
     {
         var cart = await _dbContext.Carts
             .Include(c => c.Items)
-            .FirstOrDefaultAsync(c=>c.IdentityUserId == identityUserId);
+            .FirstOrDefaultAsync(c=>c.UserId == UserId);
         if (cart == null)
         {
             return new Cart
@@ -45,11 +45,11 @@ public class CartService: ICartService
         };
     }
 
-    public async Task UpdateItemAsync(string identityUserId, Guid cartItemId, int quantity)
+    public async Task UpdateItemAsync(string UserId, Guid cartItemId, int quantity)
     {
        var item = await _dbContext.CartItems
            .Include(i=>i.Cart)
-           .FirstOrDefaultAsync(i=>i.Id==cartItemId && i.Cart.IdentityUserId==identityUserId)
+           .FirstOrDefaultAsync(i=>i.Id==cartItemId && i.Cart.UserId==UserId)
            ?? throw new Exception("Item wasn't found");
        
        item.Quantity = quantity;
@@ -57,22 +57,22 @@ public class CartService: ICartService
        
     }
 
-    public async Task RemoveItemAsync(string identityUserId, Guid cartItemId)
+    public async Task RemoveItemAsync(string UserId, Guid cartItemId)
     {
         var item = await _dbContext.CartItems
                        .Include(i=>i.Cart)
-                       .FirstOrDefaultAsync(i=>i.Id==cartItemId && i.Cart.IdentityUserId==identityUserId)
+                       .FirstOrDefaultAsync(i=>i.Id==cartItemId && i.Cart.UserId==UserId)
                    ?? throw new Exception("Item wasn't found");
        
         _dbContext.CartItems.Remove(item);
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task ClearAsync(string identityUserId)
+    public async Task ClearAsync(string UserId)
     {
         var cart = await _dbContext.Carts
             .Include(c => c.Items)
-            .FirstOrDefaultAsync(c=>c.IdentityUserId == identityUserId);
+            .FirstOrDefaultAsync(c=>c.UserId == UserId);
 
         if (cart == null)
         {
@@ -81,11 +81,11 @@ public class CartService: ICartService
         _dbContext.CartItems.RemoveRange(cart.Items);
         await _dbContext.SaveChangesAsync();
     }
-    public async Task AddItemAsync(string identityUserId, Guid productId, int quantity)
+    public async Task AddItemAsync(string UserId, Guid productId, int quantity)
     {
         var product = await _dbContext.Products.FindAsync(productId)
                       ?? throw new Exception("Product not found");
-        var cart = await GetOrCreateCartAsync(identityUserId);
+        var cart = await GetOrCreateCartAsync(UserId);
         
         var item = cart.Items.FirstOrDefault(i => i.ProductId == productId);
         if (item != null)
@@ -107,11 +107,11 @@ public class CartService: ICartService
     }
 
 
-    private async Task<Cart?> GetOrCreateCartAsync(string identityUserId)
+    private async Task<Cart?> GetOrCreateCartAsync(string UserId)
     {
         var cart = await _dbContext.Carts
             .Include(c=>c.Items)
-            .FirstOrDefaultAsync(c=>c.IdentityUserId == identityUserId);
+            .FirstOrDefaultAsync(c=>c.UserId == UserId);
 
         
         if (cart == null)
@@ -119,7 +119,7 @@ public class CartService: ICartService
             cart = new Cart
             {
                 Id = Guid.NewGuid(),
-                IdentityUserId = identityUserId,
+                UserId = UserId,
                 Items = new List<CartItem>()
             };
             _dbContext.Carts.Add(cart);
