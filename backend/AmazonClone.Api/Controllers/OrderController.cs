@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AmazonClone.Application.Interfaces;
 using AmazonClone.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmazonClone.Api.Controllers;
@@ -8,6 +9,7 @@ namespace AmazonClone.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class OrderController : ControllerBase
 {
     readonly IOrderService _orderService;
