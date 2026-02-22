@@ -1696,6 +1696,7 @@
         "dependencies": {
           "AmazonClone.Domain": "1.0.0",
           "AmazonClone.Infrastructure": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "8.0.23",
           "Microsoft.Extensions.Configuration": "9.0.12",
           "SendGrid": "9.29.3"
         },

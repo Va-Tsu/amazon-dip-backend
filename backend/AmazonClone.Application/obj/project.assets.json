@@ -4319,6 +4319,7 @@
     "net8.0": [
       "AmazonClone.Domain >= 1.0.0",
       "AmazonClone.Infrastructure >= 1.0.0",
+      "Microsoft.EntityFrameworkCore >= 8.0.23",
       "Microsoft.Extensions.Configuration >= 9.0.12",
       "SendGrid >= 9.29.3"
     ]
@@ -4375,6 +4376,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Microsoft.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[8.0.23, )"
+          },
           "Microsoft.Extensions.Configuration": {
             "target": "Package",
             "version": "[9.0.12, )"
