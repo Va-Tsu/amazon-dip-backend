@@ -39,31 +39,31 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
-        var identityUser = new IdentityUser
+        if (string.IsNullOrWhiteSpace(registerDto.Email))
         {
-            UserName = registerDto.Email,
-            Email = registerDto.Email
-        };
-
-        var result = await _userManager.CreateAsync(identityUser,registerDto.Password );
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
-
+            return BadRequest("Email is required");
+        }
+        
         var user = new User
         {
             FullName = registerDto.FullName,
             Email = registerDto.Email,
-            IdentityUserId = identityUser.Id
         };
-
         
-        _dbContext.Users.Add(user);
+
+        var result = await _userManager.CreateAsync(user,registerDto.Password );
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+        
         await _dbContext.SaveChangesAsync();
 
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
+        await _userManager.AddToRoleAsync(user, "User");
+        
+        
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
         var link = Url.Action("ConfirmEmail", "User",
-            new { id = identityUser.Id, token },
+            new { id = user.Id, token },
             Request.Scheme);
 
         // TODO: send link via email
@@ -100,13 +100,17 @@ public class UserController : ControllerBase
         if (!result.Succeeded)
             return Unauthorized("Invalid credentials");
 
-        var claims = new[]
+        var roles = await _userManager.GetRolesAsync(user);
+        
+        var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Email, user.Email ?? ""),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
+        claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+        
         var jwt = _config.GetSection("Jwt");
         var getKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!));
         var creds = new SigningCredentials(getKey, SecurityAlgorithms.HmacSha256);
@@ -124,6 +128,8 @@ public class UserController : ControllerBase
             expiration = token.ValidTo
         });
     }
+    
+    [Authorize]
     [HttpPost("logout")]
     public async Task<IActionResult> Logout([FromHeader(Name = "Authorization")] string authHeader)
     {
@@ -208,12 +214,7 @@ public class UserController : ControllerBase
         return Ok("Password changed");
     }
     
-    
-    
-    
-    
-    
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpGet("users")]
     public IActionResult GetUsers()
     {
