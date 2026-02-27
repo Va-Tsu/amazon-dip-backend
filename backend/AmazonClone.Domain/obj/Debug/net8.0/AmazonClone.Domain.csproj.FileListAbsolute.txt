@@ -10,3 +10,4 @@ D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\AmazonC
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\refint\AmazonClone.Domain.dll
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\AmazonClone.Domain.pdb
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\ref\AmazonClone.Domain.dll
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Domain\obj\Debug\net8.0\AmazonClone.Domain.csproj.AssemblyReference.cache
