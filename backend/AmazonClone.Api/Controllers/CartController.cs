@@ -21,47 +21,99 @@ public class CartController : ControllerBase
         _cartService = cartService;
         _userManager = userManager;
     }
+    
+    private const string CartCookie = "cart_id";
 
+    private string GetOrCreateCartKey()
+    {
+        if (Request.Cookies.TryGetValue(CartCookie, out var key) && !string.IsNullOrWhiteSpace(key))
+            return key;
 
-    [Authorize]
+        key = Guid.NewGuid().ToString("N");
+        Response.Cookies.Append(CartCookie, key, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,                 // requires HTTPS
+            SameSite = SameSiteMode.Lax,
+            Expires = DateTimeOffset.UtcNow.AddDays(30)
+        });
+
+        return key;
+    }
+
+    private (string? userId, string cartKey) ResolveOwner()
+    {
+        var userId = User.Identity?.IsAuthenticated == true
+            ? User.FindFirstValue(ClaimTypes.NameIdentifier)
+            : null;
+
+        return (userId, GetOrCreateCartKey());
+    }
+
     [HttpGet]
-    public async Task<ActionResult> Get()
+    public async Task<IActionResult> Get(CancellationToken ct)
     {
-        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return Ok(await _cartService.GetMyCartAsync(UserId));
+        var (userId, cartKey) = ResolveOwner();
+        var cart = await _cartService.GetCartAsync(userId, cartKey, ct);
+        return Ok(cart);
     }
 
-    [Authorize]
     [HttpPost("add")]
-    public async Task<IActionResult> AddItem(CartItem cartItem)
+    public async Task<IActionResult> AddItem(Guid productId, int quantity, CancellationToken ct)
     {
-        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        await _cartService.AddItemAsync(UserId, cartItem.ProductId, cartItem.Quantity);
+        var (userId, cartKey) = ResolveOwner();
+        await _cartService.AddItemAsync(userId, cartKey, productId, quantity, ct);
         return Ok();
     }
 
-    [HttpPut("update/{id}")]
-    public async Task<IActionResult> Update(Guid itemId, int quantity)
+    [HttpPut("update/{id:guid}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] int quantity, CancellationToken ct)
     {
-        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        await _cartService.UpdateItemAsync(UserId, itemId, quantity);
+        var (userId, cartKey) = ResolveOwner();
+        await _cartService.UpdateItemAsync(userId, cartKey, id, quantity, ct);
         return Ok();
-        
     }
 
-    [HttpDelete("remove/{id}")]
-    public async Task<IActionResult> Remove(Guid itemId)
+    [HttpDelete("remove/{id:guid}")]
+    public async Task<IActionResult> Remove([FromRoute] Guid id, CancellationToken ct)
     {
-        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        await _cartService.RemoveItemAsync(UserId, itemId);
+        var (userId, cartKey) = ResolveOwner();
+        await _cartService.RemoveItemAsync(userId, cartKey, id, ct);
         return Ok();
     }
 
     [HttpDelete("clear")]
-    public async Task<IActionResult> Clear()
+    public async Task<IActionResult> Clear(CancellationToken ct)
     {
-        var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        await _cartService.ClearAsync(UserId);
+        var (userId, cartKey) = ResolveOwner();
+        await _cartService.ClearAsync(userId, cartKey, ct);
         return Ok();
     }
+
+    // OPTIONAL: call after login to merge guest cart into user cart
+    [Authorize]
+    [HttpPost("merge")]
+    public async Task<IActionResult> Merge(CancellationToken ct)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var cartKey = GetOrCreateCartKey();
+
+        await _cartService.MergeGuestCartIntoUserAsync(userId!, cartKey, ct);
+        return Ok();
+    }
+
+    // OPTIONAL: checkout (choose whether it requires login)
+    // If guest checkout is allowed -> remove [Authorize]
+    [Authorize]
+    [HttpPost("checkout")]
+    public async Task<IActionResult> Checkout(CancellationToken ct)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var cartKey = GetOrCreateCartKey();
+
+        var orderId = await _cartService.CheckoutAsync(userId, cartKey, ct);
+        return Ok(new { orderId });
+    }
+    
+    
 }
