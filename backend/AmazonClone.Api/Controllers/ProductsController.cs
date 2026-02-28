@@ -1,4 +1,6 @@
 using AmazonClone.Application.Interfaces;
+using AmazonClone.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmazonClone.Api.Controllers;
@@ -58,5 +60,35 @@ public class ProductsController: ControllerBase
     public async Task<IActionResult> GetRecommended()
     {
         return Ok(await _productService.GetRecommendedAsync());
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("create")]
+    public async Task<IActionResult> Create( Product product, CancellationToken ct)
+    {
+        var id = await _productService.CreateAsync(product, ct);
+        return CreatedAtAction(nameof(GetById), new { id = id }, product);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("update/{id}")]
+    public async Task<IActionResult> Update(Guid id, string? name, string? description,
+        decimal? price, decimal? weight, int? categoryId,
+        int? countryId, string? imageUrl, bool? isActive, CancellationToken ct)
+    {
+        var ok = await _productService.UpdateAsync(id, name, description, price,
+            weight, categoryId, countryId,
+            imageUrl, isActive, ct);
+        return ok ? NoContent() : NotFound();
+        
+    }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpPut("delete/{id}")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+    {
+        var ok = await _productService.DeleteAsync(id, ct);
+        return ok ? NoContent() : NotFound();
+        
     }
 }
