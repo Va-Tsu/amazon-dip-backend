@@ -11,5 +11,15 @@ public interface IProductService
     Task<List<Product>> SearchAsync(string query);
     Task<List<Product>> GetNewAsync();
     Task<List<Product>> GetRecommendedAsync();
+    
+    Task<Guid> CreateAsync(Product product, CancellationToken ct = default);
+    
+    Task<bool> UpdateAsync(Guid id, string? name, string? description,
+        decimal? price, decimal? weight, int? categoryId,
+        int? countryId, string? imageUrl, bool? isActive , CancellationToken ct = default);
+    
+    Task<bool> DeleteAsync(Guid id, CancellationToken ct = default);
+    
+    
 
 }
