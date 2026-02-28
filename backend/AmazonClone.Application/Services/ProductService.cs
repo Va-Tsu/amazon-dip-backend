@@ -72,4 +72,92 @@ public class ProductService : IProductService
     {
         throw new NotImplementedException();
     }
+
+    public async Task<Guid> CreateAsync(Product product, CancellationToken ct = default)
+    {
+        var newProduct = new Product
+        {
+            Id = Guid.NewGuid(),
+            Name = product.Name,
+            Description = product.Description,
+            Weight = product.Weight,
+            Price = product.Price,
+            CategoryId = product.CategoryId,
+            CountryId = product.CountryId,
+            CreatedAt = DateTime.Now,
+            ImageUrl = product.ImageUrl
+        };
+        _dbContext.Products.Add(newProduct);
+        await _dbContext.SaveChangesAsync(ct);
+        return product.Id;
+    }
+
+    public async Task<bool> UpdateAsync(Guid id, string? name, string? description, 
+        decimal? price, decimal? weight, int? categoryId, int? countryId,
+        string? imageUrl, bool? isActive, CancellationToken ct = default)
+    {
+        var product = await _dbContext.Products.FirstOrDefaultAsync(u=>u.Id==id, ct);
+        if (product == null)
+        {
+            return false;
+        }
+
+        if (name != null)
+        {
+            product.Name = name;
+        }
+
+        if (description != null)
+        {
+            product.Description = description;
+        }
+
+        if (price.HasValue)
+        {
+            product.Price = price.Value;
+        }
+
+        if (weight.HasValue)
+        {
+            product.Weight = weight.Value;
+        }
+
+        if (categoryId.HasValue)
+        {
+            product.CategoryId = categoryId.Value;
+        }
+
+        if (countryId.HasValue)
+        {
+            product.CountryId = countryId.Value;
+        }
+
+        if (imageUrl != null)
+        {
+            product.ImageUrl = imageUrl;
+        }
+
+        if (isActive.HasValue)
+        {
+            product.IsActive = isActive.Value;
+        }
+        
+
+        await _dbContext.SaveChangesAsync(ct);
+        return true;
+    }
+    
+
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
+    {
+        var product = _dbContext.Products.FirstOrDefaultAsync(u => u.Id == id, ct);
+        if (product == null)
+        {
+            return false;
+        }
+        
+        _dbContext.Remove(product);
+        await _dbContext.SaveChangesAsync(ct);
+        return true;
+    }
 }
