@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace AmazonClone.Domain.Entities;
 
 public class Product
@@ -14,6 +16,17 @@ public class Product
     public Country Country { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
     public bool IsActive { get; set; } = true;
+    
+    public ICollection<Discount> Discounts { get; set; } = new List<Discount>();
+    
+    [NotMapped]
+    public decimal CurrentPrice { get; set; }
+    
+    [NotMapped]
+    public decimal? OldPrice { get; set; }
+    
+    [NotMapped]
+    public bool HasDiscount { get; set; }
 
 
 }
