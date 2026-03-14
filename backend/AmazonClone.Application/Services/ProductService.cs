@@ -1,3 +1,4 @@
+using AmazonClone.Application.Helpers;
 using AmazonClone.Application.Interfaces;
 using AmazonClone.Domain.Entities;
 using AmazonClone.Infrastructure.Data;
@@ -23,33 +24,24 @@ public class ProductService : IProductService
             .ToListAsync();
     }
 
-    public async Task<Product?> GetByIdAsync(Guid id)
+    public async Task<Product?> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
-        return await _dbContext.Products
+        var product = await _dbContext.Products
+            .AsNoTracking()
+            .Include(p => p.Discounts)
             .Include(p => p.Category)
             .Include(p => p.Country)
             .Where(p => p.Id == id && p.IsActive)
-            .FirstOrDefaultAsync();
-    }
+            .FirstOrDefaultAsync(ct);
 
-    public async Task<List<Product>> GetByCategoryIdAsync(int categoryId)
-    {
-        return await _dbContext.Products
-            .Include(p => p.Category)
-            .Include(p => p.Country)
-            .Where(p => p.CategoryId == categoryId)
-            .ToListAsync();
+        if (product == null)
+        {
+            return null;
+        }
+        DiscountHelper.ApplyDiscount(product);
+        return product;
     }
-
-    public async Task<List<Product>> GetByCountryIdAsync(int countryId)
-    {
-        return await _dbContext.Products
-            .Include(p => p.Category)
-            .Include(p => p.Country)
-            .Where(p => p.CountryId == countryId)
-            .ToListAsync();
-    }
-
+    
     public async Task<List<Product>> SearchAsync(string query)
     {
         return await _dbContext.Products
