@@ -21,6 +21,8 @@ public class ApplicationDbContext: IdentityDbContext<User>
     
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
+    
+    public DbSet<Discount> Discounts { get; set; }
 
     public DbSet<RecentlyViewedProduct> RecentlyViewedProducts { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
@@ -67,6 +69,28 @@ public class ApplicationDbContext: IdentityDbContext<User>
             .HasIndex(r => new { r.UserId, r.ViewedAt });
         builder.Entity<RecentlyViewedProduct>()
             .HasIndex(r => new { r.UserId, r.ProductId });
+
+
+        builder.Entity<Product>()
+            .HasMany(p => p.Discounts)
+            .WithOne(d => d.Product)
+            .HasForeignKey(d => d.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Product>()
+            .Property(p => p.Price)
+            .HasPrecision(18, 2);
+        
+        builder.Entity<Discount>()
+            .Property(d=>d.DiscountPrice)
+            .HasPrecision(18, 2);
+        
+        builder.Entity<Discount>()
+            .HasIndex(d => d.ProductId);
+        
+        builder.Entity<Discount>()
+            .HasIndex(d => new{d.IsActive, d.StartAt, d.EndAt});
+
 
 
     }
