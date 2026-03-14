@@ -18,6 +18,7 @@ public class Product
     public bool IsActive { get; set; } = true;
     
     public ICollection<Discount> Discounts { get; set; } = new List<Discount>();
+    public ICollection<ProductComment> Comments { get; set; } = new List<ProductComment>();
     
     [NotMapped]
     public decimal CurrentPrice { get; set; }
