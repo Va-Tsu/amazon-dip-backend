@@ -5,9 +5,8 @@ namespace AmazonClone.Application.Interfaces;
 public interface IProductService
 {
     Task<List<Product>> GetAllAsync();
-    Task<Product?> GetByIdAsync(Guid id);
-    Task<List<Product>> GetByCategoryIdAsync(int categoryId);
-    Task<List<Product>> GetByCountryIdAsync(int countryId);
+    Task<Product?> GetByIdAsync(Guid id, CancellationToken ct = default);
+    
     Task<List<Product>> SearchAsync(string query);
     Task<List<Product>> GetNewAsync();
     
