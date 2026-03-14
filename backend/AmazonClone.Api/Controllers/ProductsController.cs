@@ -37,17 +37,7 @@ public class ProductsController: ControllerBase
         }
         return Ok(product);
     }
-
-    [HttpGet("category/{categoryId}")]
-    public async Task<IActionResult> GetByCategoryId(int categoryId)
-    {
-        return Ok(await _productService.GetByCategoryIdAsync(categoryId));
-    }
-    [HttpGet("country/{countryId}")]
-    public async Task<IActionResult> GetByCountryId(int countryId)
-    {
-        return Ok(await _productService.GetByCountryIdAsync(countryId));
-    }
+    
 
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] string query)
