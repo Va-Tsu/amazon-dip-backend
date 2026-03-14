@@ -22,6 +22,7 @@ public class ApplicationDbContext: IdentityDbContext<User>
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
 
+    public DbSet<RecentlyViewedProduct> RecentlyViewedProducts { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -49,6 +50,23 @@ public class ApplicationDbContext: IdentityDbContext<User>
             .WithOne()
             .HasForeignKey(c => c.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<RecentlyViewedProduct>()
+            .HasOne(r => r.User)
+            .WithMany(u => u.RecentlyViewedProducts)
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<RecentlyViewedProduct>()
+            .HasOne(r => r.Product)
+            .WithMany()
+            .HasForeignKey(r => r.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<RecentlyViewedProduct>()
+            .HasIndex(r => new { r.UserId, r.ViewedAt });
+        builder.Entity<RecentlyViewedProduct>()
+            .HasIndex(r => new { r.UserId, r.ProductId });
 
 
     }
