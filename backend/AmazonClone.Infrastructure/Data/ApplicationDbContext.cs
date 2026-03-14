@@ -23,6 +23,7 @@ public class ApplicationDbContext: IdentityDbContext<User>
     public DbSet<OrderItem> OrderItems { get; set; }
     
     public DbSet<Discount> Discounts { get; set; }
+    public DbSet<ProductComment> ProductComments { get; set; }
 
     public DbSet<RecentlyViewedProduct> RecentlyViewedProducts { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
@@ -90,6 +91,24 @@ public class ApplicationDbContext: IdentityDbContext<User>
         
         builder.Entity<Discount>()
             .HasIndex(d => new{d.IsActive, d.StartAt, d.EndAt});
+
+        builder.Entity<ProductComment>()
+            .HasOne(c => c.Product)
+            .WithMany(p => p.Comments)
+            .HasForeignKey(c => c.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<ProductComment>()
+            .HasOne(c => c.User)
+            .WithMany(u=>u.ProductComments)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.Entity<ProductComment>()
+            .HasIndex(c=>c.ProductId);
+
+        builder.Entity<ProductComment>()
+            .HasIndex(c => c.UserId);
 
 
 
