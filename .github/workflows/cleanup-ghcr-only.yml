@@ -1,0 +1,58 @@
+name: Cleanup old GHCR container versions
+
+on:
+  schedule:
+    - cron: '0 3 * * 1' # щопонеділка о 03:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    env:
+      KEEP_LAST: 5
+      OWNER: ${{ github.repository_owner }}
+      REPO: ${{ github.repository.name }}
+      IMAGES: "amazon-dip-frontend amazon-dip-backend"
+    steps:
+      - name: Install gh CLI
+        uses: cli/cli-action@v2
+
+      - name: Authenticate gh CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Cleanup old container versions in GHCR
+        run: |
+          set -euo pipefail
+          for IMAGE in $IMAGES; do
+            echo "Processing image: $IMAGE"
+
+            # Отримати всі версії образу (новіші перші)
+            VERSIONS_JSON=$(gh api "/repos/${OWNER}/${REPO}/packages/container/${IMAGE}/versions?per_page=100")
+            
+            COUNT=0
+            echo "$VERSIONS_JSON" | jq -c '.[]' | while read -r version; do
+              COUNT=$((COUNT+1))
+              ID=$(echo "$version" | jq -r '.id')
+              TAGS=$(echo "$version" | jq -r '.metadata.container.tags[]? // empty')
+
+              # Пропускаємо останні KEEP_LAST версій
+              if [ "$COUNT" -le "$KEEP_LAST" ]; then
+                echo "Keeping version id=$ID (recent)"
+                continue
+              fi
+
+              # Пропускаємо тег latest (якщо він серед останніх, він вже зберігся у KEEP_LAST)
+              if echo "$TAGS" | grep -q 'latest'; then
+                echo "Keeping version id=$ID (tagged 'latest')"
+                continue
+              fi
+
+              # Видаляємо старі версії
+              echo "Deleting version id=$ID of $IMAGE (tags: $TAGS)"
+              gh api -X DELETE "/users/${OWNER}/packages/container/${IMAGE}/versions/${ID}"
+            done
+          done
