@@ -21,10 +21,18 @@ jobs:
       - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build and push backend (latest and sha)
+      - name: Build and push backend (latest and short-sha)
+        env:
+          # GITHUB_REPOSITORY_OWNER and GITHUB_SHA are provided by Actions runner
+          OWNER: ${{ github.repository_owner }}
+          SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          IMAGE=ghcr.io/${{ toLower(github.repository_owner) }}/amazon-dip-backend
-          docker build -t "$IMAGE:latest" -t "$IMAGE:${{ github.sha }}" ./backend
+          # Приводимо OWNER до нижнього регістру у bash
+          OWNER_LOWER="${OWNER,,}"
+          SHORT_SHA="${SHA::8}"
+          IMAGE="ghcr.io/${OWNER_LOWER}/amazon-dip-backend"
+          echo "Building image: $IMAGE (tags: latest, $SHORT_SHA)"
+          docker build -t "$IMAGE:latest" -t "$IMAGE:$SHORT_SHA" ./backend
           docker push "$IMAGE:latest"
-          docker push "$IMAGE:${{ github.sha }}"
+          docker push "$IMAGE:$SHORT_SHA"
