@@ -14,9 +14,9 @@ namespace AmazonClone.Api.Controllers;
 public class CartController : ControllerBase
 {
     readonly ICartService _cartService;
-    readonly UserManager<IdentityUser> _userManager;
+    readonly UserManager<User> _userManager;
 
-    public CartController(ICartService cartService, UserManager<IdentityUser> userManager)
+    public CartController(ICartService cartService, UserManager<User> userManager)
     {
         _cartService = cartService;
         _userManager = userManager;
