@@ -10,13 +10,18 @@ public interface IProductService
     Task<List<Product>> SearchAsync(string query);
     Task<List<Product>> GetNewAsync();
     
-    Task<(List<Product>, bool hasMore)> GetRecommendedAsync(string? userId, int page,int pageSize, CancellationToken ct = default);
+    Task<(List<Product>, bool hasMore)> GetRecommendedAsync(string? userId, int page,
+        int pageSize, CancellationToken ct = default);
     Task AddRecentlyViewedAsync(string userId, Guid productId, CancellationToken ct = default);
     Task<Guid> CreateAsync(Product product, CancellationToken ct = default);
-    
-    Task<bool> UpdateAsync(Guid id, string? name, string? description,
-        decimal? price, decimal? weight, int? categoryId,
-        int? countryId, string? imageUrl, bool? isActive , CancellationToken ct = default);
+
+    Task<bool> UpdateAsync(
+        Guid id, string? name, string? brand, string? description,
+        string? sku,  decimal? price, decimal? weight, decimal? parcelWeight,
+        int? categoryId, int? countryId, string? ingredients,
+        string? storageConditions, DateTime? expirationDate, string? article,
+        int? stockQuantity, bool? trackInventory, List<string>? imageUrls,
+        bool? isActive, CancellationToken ct = default);
     
     Task<bool> DeleteAsync(Guid id, CancellationToken ct = default);
     
