@@ -8,6 +8,7 @@ using AmazonClone.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AmazonClone.Api.Controllers;
@@ -18,14 +19,14 @@ namespace AmazonClone.Api.Controllers;
 public class UserController : ControllerBase
 {
     readonly ApplicationDbContext _dbContext;
-    readonly UserManager<IdentityUser> _userManager;
-    readonly SignInManager<IdentityUser> _signInManager;
+    readonly UserManager<User> _userManager;
+    readonly SignInManager<User> _signInManager;
     readonly IConfiguration _config;
     readonly IEmailService _emailService;
 
     public UserController(ApplicationDbContext context, 
-        UserManager<IdentityUser> userManager, 
-        SignInManager<IdentityUser> signInManager,
+        UserManager<User> userManager, 
+        SignInManager<User> signInManager,
         IConfiguration config, IEmailService emailService)
     {
         _dbContext = context;
@@ -48,6 +49,7 @@ public class UserController : ControllerBase
         {
             FullName = registerDto.FullName,
             Email = registerDto.Email,
+            UserName = registerDto.Email
         };
         
 
@@ -213,6 +215,26 @@ public class UserController : ControllerBase
 
         return Ok("Password changed");
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> Me(CancellationToken ct)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        var user = await _dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId, ct);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        return Ok(user);
+    }
+    
     
     [Authorize(Roles = "Admin")]
     [HttpGet("users")]
