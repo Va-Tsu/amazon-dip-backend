@@ -97,24 +97,48 @@ public class ProductsController: ControllerBase
     public async Task<IActionResult> Create( Product product, CancellationToken ct)
     {
         var id = await _productService.CreateAsync(product, ct);
-        return CreatedAtAction(nameof(GetById), new { id = id }, product);
+        return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
     [Authorize(Roles = "Admin")]
     [HttpPut("update/{id}")]
-    public async Task<IActionResult> Update(Guid id, string? name, string? description,
-        decimal? price, decimal? weight, int? categoryId,
-        int? countryId, string? imageUrl, bool? isActive, CancellationToken ct)
+    public async Task<IActionResult> Update(Guid id, string? name, string? brand,
+        string? description, string? sku, decimal? price, decimal? weight,
+        decimal? parcelWeight, int? categoryId, int? countryId, string? ingridients,
+        string? storageConditions, DateTime? expirationDate, string? article,
+        int? stockQuantity, bool? trackInventory, List<string>? imageUrls, bool? isActive,
+        CancellationToken ct)
     {
-        var ok = await _productService.UpdateAsync(id, name, description, price,
-            weight, categoryId, countryId,
-            imageUrl, isActive, ct);
-        return ok ? NoContent() : NotFound();
+        var ok = await _productService.UpdateAsync(
+            id,
+            name,
+            brand,
+            description,
+            sku,
+            price,
+            weight,
+            parcelWeight,
+            categoryId,
+            countryId,
+            ingridients,
+            storageConditions,
+            expirationDate,
+            article,
+            stockQuantity,
+            trackInventory,
+            imageUrls,
+            isActive,
+            ct);
+
+        if (!ok)
+            return NotFound();
+
+        return Ok("Product updated");
         
     }
     
     [Authorize(Roles = "Admin")]
-    [HttpPut("delete/{id}")]
+    [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
     {
         var ok = await _productService.DeleteAsync(id, ct);
