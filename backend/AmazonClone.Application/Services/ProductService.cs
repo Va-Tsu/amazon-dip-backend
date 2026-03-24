@@ -184,82 +184,170 @@ public class ProductService : IProductService
 
     public async Task<Guid> CreateAsync(Product product, CancellationToken ct = default)
     {
+        var newProductId = Guid.NewGuid();
+
         var newProduct = new Product
         {
-            Id = Guid.NewGuid(),
+            Id = newProductId,
             Name = product.Name,
+            Brand = product.Brand,
             Description = product.Description,
+            SKU = product.SKU,
             Weight = product.Weight,
+            ParcelWeight = product.ParcelWeight,
             Price = product.Price,
             CategoryId = product.CategoryId,
             CountryId = product.CountryId,
-            CreatedAt = DateTime.Now,
-            ImageUrl = product.ImageUrl
+            SellerId = product.SellerId,
+            Ingridients = product.Ingridients,
+            StorageConditions = product.StorageConditions,
+            ExpirationDate = product.ExpirationDate,
+            Article = product.Article,
+            StockQuantity = product.StockQuantity,
+            TrackInventory = product.TrackInventory,
+            IsActive = product.IsActive,
+            CreatedAt = DateTime.UtcNow,
+            Images = new List<ProductImage>()
         };
+
+        if (product.Images != null && product.Images.Any())
+        {
+            var validImages = product.Images
+                .Where(i => !string.IsNullOrWhiteSpace(i.Url))
+                .ToList();
+
+            for (int i = 0; i < validImages.Count; i++)
+            {
+                newProduct.Images.Add(new ProductImage
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = newProductId,
+                    Url = validImages[i].Url,
+                    SortOrder = i,
+                    IsMain = validImages[i].IsMain
+                });
+            }
+
+            if (newProduct.Images.Count > 0 && !newProduct.Images.Any(i => i.IsMain))
+            {
+                newProduct.Images.First().IsMain = true;
+            }
+        }
+
         _dbContext.Products.Add(newProduct);
         await _dbContext.SaveChangesAsync(ct);
-        return product.Id;
+
+        return newProductId;
     }
 
-    public async Task<bool> UpdateAsync(Guid id, string? name, string? description, 
-        decimal? price, decimal? weight, int? categoryId, int? countryId,
-        string? imageUrl, bool? isActive, CancellationToken ct = default)
+    public async Task<bool> UpdateAsync(
+    Guid id,
+    string? name,
+    string? brand,
+    string? description,
+    string? sku,
+    decimal? price,
+    decimal? weight,
+    decimal? parcelWeight,
+    int? categoryId,
+    int? countryId,
+    string? ingridients,
+    string? storageConditions,
+    DateTime? expirationDate,
+    string? article,
+    int? stockQuantity,
+    bool? trackInventory,
+    List<string>? imageUrls,
+    bool? isActive,
+    CancellationToken ct = default)
+{
+    var product = await _dbContext.Products
+        .Include(p => p.Images)
+        .FirstOrDefaultAsync(p => p.Id == id, ct);
+
+    if (product == null)
+        return false;
+
+    if (name != null)
+        product.Name = name;
+
+    if (brand != null)
+        product.Brand = brand;
+
+    if (description != null)
+        product.Description = description;
+
+    if (sku != null)
+        product.SKU = sku;
+
+    if (price.HasValue)
+        product.Price = price.Value;
+
+    if (weight.HasValue)
+        product.Weight = weight.Value;
+
+    if (parcelWeight.HasValue)
+        product.ParcelWeight = parcelWeight.Value;
+
+    if (categoryId.HasValue)
+        product.CategoryId = categoryId.Value;
+
+    if (countryId.HasValue)
+        product.CountryId = countryId.Value;
+
+    if (ingridients != null)
+        product.Ingridients = ingridients;
+
+    if (storageConditions != null)
+        product.StorageConditions = storageConditions;
+
+    if (expirationDate.HasValue)
+        product.ExpirationDate = expirationDate.Value;
+
+    if (article != null)
+        product.Article = article;
+
+    if (stockQuantity.HasValue)
+        product.StockQuantity = stockQuantity.Value;
+
+    if (trackInventory.HasValue)
+        product.TrackInventory = trackInventory.Value;
+
+    if (isActive.HasValue)
+        product.IsActive = isActive.Value;
+
+    if (imageUrls != null)
     {
-        var product = await _dbContext.Products.FirstOrDefaultAsync(u=>u.Id==id, ct);
-        if (product == null)
-        {
-            return false;
-        }
+        _dbContext.ProductImages.RemoveRange(product.Images);
+        product.Images.Clear();
 
-        if (name != null)
-        {
-            product.Name = name;
-        }
+        var newImages = imageUrls
+            .Where(url => !string.IsNullOrWhiteSpace(url))
+            .Select((url, index) => new ProductImage
+            {
+                Id = Guid.NewGuid(),
+                ProductId = product.Id,
+                Url = url,
+                SortOrder = index,
+                IsMain = index == 0
+            })
+            .ToList();
 
-        if (description != null)
+        foreach (var image in newImages)
         {
-            product.Description = description;
+            product.Images.Add(image);
         }
-
-        if (price.HasValue)
-        {
-            product.Price = price.Value;
-        }
-
-        if (weight.HasValue)
-        {
-            product.Weight = weight.Value;
-        }
-
-        if (categoryId.HasValue)
-        {
-            product.CategoryId = categoryId.Value;
-        }
-
-        if (countryId.HasValue)
-        {
-            product.CountryId = countryId.Value;
-        }
-
-        if (imageUrl != null)
-        {
-            product.ImageUrl = imageUrl;
-        }
-
-        if (isActive.HasValue)
-        {
-            product.IsActive = isActive.Value;
-        }
-        
-
-        await _dbContext.SaveChangesAsync(ct);
-        return true;
     }
+
+    await _dbContext.SaveChangesAsync(ct);
+    return true;
+}
     
 
     public async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
     {
-        var product = _dbContext.Products.FirstOrDefaultAsync(u => u.Id == id, ct);
+        var product = await _dbContext.Products
+            .FirstOrDefaultAsync(u => u.Id == id, ct);
         if (product == null)
         {
             return false;
