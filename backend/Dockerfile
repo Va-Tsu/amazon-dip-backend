@@ -1,11 +1,3 @@
-# Етап збірки
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-
-# Копіюємо все і відновлюємо залежності
-COPY . .
-RUN dotnet restore
-
 # Публікуємо додаток у папку /app/publish
 RUN dotnet publish -c Release -o /app/publish
 
@@ -21,13 +13,13 @@ ENV PATH="$PATH:/root/.dotnet/tools"
 COPY --from=build /app/publish .
 COPY --from=build /src /src
 
-# Виправляємо Segmentation Fault (Error 139) для Linux-контейнерів
+# Виправляємо Segmentation Fault (Error 139) для Linux-конт>
 #ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 ENV ASPNETCORE_HTTP_PORTS=8080
 
 EXPOSE 8080
 
 # ПЕРЕКОНАЙТЕСЬ, що ваш файл дійсно називається Backend.dll
-# Якщо назва проекту інша (наприклад AmazonClone.Api), змініть ім'я файлу нижче
+# Якщо назва проекту інша (наприклад AmazonClone.Api), змін>
 #ENTRYPOINT ["dotnet", "Backend.dll"]
 ENTRYPOINT ["dotnet", "AmazonClone.Api.dll"]
