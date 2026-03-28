@@ -3,6 +3,7 @@ using AmazonClone.Api.Controllers;
 using AmazonClone.Api.Middleware;
 using AmazonClone.Application.Interfaces;
 using AmazonClone.Application.Services;
+using AmazonClone.Domain.Entities;
 using AmazonClone.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -52,7 +53,7 @@ builder.Services.AddControllers()
 
 
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<User, IdentityRole>(options =>
     {
         options.User.RequireUniqueEmail = true;
         options.SignIn.RequireConfirmedEmail = true;
