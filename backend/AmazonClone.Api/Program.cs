@@ -65,7 +65,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -84,6 +83,8 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = jwt["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
+        
+        
     });
 
 builder.Services.AddScoped<IProductService, ProductService>();
