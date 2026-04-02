@@ -42,19 +42,20 @@ public class SellerController:ControllerBase
                 return BadRequest("Passwords do not match");
             }
 
-            if (user != null)
+            if (user == null)
             {
-                var check = await _signInManager.
-                    CheckPasswordSignInAsync(user, password, false);
-                if (!check.Succeeded)
-                {
-                    return Unauthorized("Invalid credentials");
-                }
-                else
-                {
-                    return BadRequest("User with such email doesn't exist");
-                }
+                
+                return BadRequest("User with such email doesn't exist");
+                
             }
+            
+            var check = await _signInManager.
+                CheckPasswordSignInAsync(user, password, false);
+            if (!check.Succeeded)
+            {
+                return Unauthorized("Invalid credentials");
+            }
+            
             var existingSeller = await _dbContext.Sellers
                 .FirstOrDefaultAsync(s=>s.UserId == user.Id, ct);
             if (existingSeller != null)
@@ -73,6 +74,7 @@ public class SellerController:ControllerBase
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 StoreName = storeName,
+                FullName = fullName,
                 Country = country,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
