@@ -34,7 +34,7 @@ public class SellerController:ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult> RegisterSeller(string fullName,
         string email, string password, string confirmedPassword,
-        string? phoneNumber, string storeName, int countryId, CancellationToken ct)
+        string? phoneNumber, string storeName, string country, CancellationToken ct)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (password != confirmedPassword)
@@ -61,19 +61,19 @@ public class SellerController:ControllerBase
             {
                 return BadRequest("Seller account already exists");
             }
-            var countryExists = await _dbContext.Countries
+            /*var countryExists = await _dbContext.Countries
                 .AnyAsync(c => c.Id == countryId, ct);
             if (!countryExists)
             {
                 return BadRequest("Invalid country");
-            }
+            }*/
 
             var seller = new Seller()
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 StoreName = storeName,
-                CountryId = countryId,
+                Country = country,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -139,12 +139,13 @@ public class SellerController:ControllerBase
                 seller.Balance,
                 seller.PandingBalance,
                 seller.CreatedAt,
-                country = seller.Country == null ? null : new
+                /*country = seller.Country == null ? null : new
                 {
                     seller.Country.Id,
                     seller.Country.Name,
                     seller.Country.Code
-                }
+                }*/
+                seller.Country
             }
         });
     }   
@@ -234,12 +235,13 @@ public class SellerController:ControllerBase
                 seller.Balance,
                 seller.PandingBalance,
                 seller.CreatedAt,
-                country= seller.Country == null ? null: new
+                seller.Country,
+                /*country= seller.Country == null ? null: new
                 {
                     seller.Country.Id,
                     seller.Country.Name,
                     seller.Country.Code
-                },
+                },*/
                 user = seller.User == null? null : new 
                 {
                     seller.User.Id,
