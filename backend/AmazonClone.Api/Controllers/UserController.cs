@@ -68,8 +68,14 @@ public class UserController : ControllerBase
             new { id = user.Id, token },
             Request.Scheme);
 
+        await _emailService.SendAsync(
+            user.Email,
+            "Confirm your email",
+            $"Click here to confirm: <a href='{link}'>Confirm Email</a>"
+        );
+        
         // TODO: send link via email
-        return Ok(new { message = "User created. Please confirm email.", confirmLink = link });
+        return Ok(new { message = "User created. Please confirm email."});
     }
     
     [HttpGet("confirm-email")]
