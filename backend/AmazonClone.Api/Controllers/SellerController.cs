@@ -165,7 +165,6 @@ public class SellerController:ControllerBase
         var seller  = await _dbContext.Sellers
             .AsNoTracking()
             .Include(s=>s.User)
-            .Include(s=>s.Country)
             .FirstOrDefaultAsync(s => s.UserId == userId, ct);
         if (seller == null)
         {
