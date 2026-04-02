@@ -7,5 +7,5 @@ public class Country
     public string ImageUrl { get; set; }
     public string Code { get; set; }
     public ICollection<Product> Products { get; set; } = new List<Product>();
-    public ICollection<Seller> Sellers { get; set; } = new List<Seller>();
+    //public ICollection<Seller> Sellers { get; set; } = new List<Seller>();
 }
