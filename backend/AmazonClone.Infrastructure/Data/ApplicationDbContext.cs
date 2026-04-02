@@ -135,11 +135,11 @@ public class ApplicationDbContext: IdentityDbContext<User>
             .HasForeignKey(p=>p.SellerId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.Entity<Seller>()
+        /*builder.Entity<Seller>()
             .HasOne(s => s.Country)
             .WithMany(u => u.Sellers)
             .HasForeignKey(s => s.CountryId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Restrict);*/
       
         builder.Entity<Seller>()
             .Property(s=>s.Balance)
