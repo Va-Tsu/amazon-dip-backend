@@ -9,8 +9,9 @@ public class Seller
     public string StoreName { get; set; }
     public string? Description { get; set; }
     public string? ImageUrl { get; set; }
-    public int CountryId { get; set; }
-    public Country Country { get; set; }
+    //public int CountryId { get; set; }
+    //public Country Country { get; set; }
+    public string Country { get; set; }
 
     public string UserId { get; set; } = default!;
     public User User { get; set; } = default!;
