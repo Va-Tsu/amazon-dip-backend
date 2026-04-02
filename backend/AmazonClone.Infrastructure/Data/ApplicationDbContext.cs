@@ -65,6 +65,22 @@ public class ApplicationDbContext: IdentityDbContext<User>
             .WithMany(p=>p.OrderItems)
             .HasForeignKey(oi=>oi.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.Entity<OrderItem>()
+            .Property(p => p.Price)
+            .HasPrecision(18, 2);
+        
+        builder.Entity<Order>()
+            .Property(p => p.TotalPrice)
+            .HasPrecision(18, 2);
+        
+        builder.Entity<Cart>()
+            .Property(p => p.TotalPrice)
+            .HasPrecision(18, 2);
+        
+        builder.Entity<CartItem>()
+            .Property(p => p.Price)
+            .HasPrecision(18, 2);
 
         builder.Entity<RecentlyViewedProduct>()
             .HasOne(r => r.User)
@@ -92,6 +108,22 @@ public class ApplicationDbContext: IdentityDbContext<User>
 
         builder.Entity<Product>()
             .Property(p => p.Price)
+            .HasPrecision(18, 2);
+        
+        builder.Entity<Product>()
+            .Property(p => p.OldPrice)
+            .HasPrecision(18, 2);
+        
+        builder.Entity<Product>()
+            .Property(p => p.CurrentPrice)
+            .HasPrecision(18, 2);
+        
+        builder.Entity<Product>()
+            .Property(p => p.Weight)
+            .HasPrecision(18, 2);
+        
+        builder.Entity<Product>()
+            .Property(p => p.ParcelWeight)
             .HasPrecision(18, 2);
         
         builder.Entity<Discount>()
