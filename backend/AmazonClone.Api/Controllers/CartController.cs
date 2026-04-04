@@ -26,7 +26,8 @@ public class CartController : ControllerBase
 
     private string GetOrCreateCartKey()
     {
-        if (Request.Cookies.TryGetValue(CartCookie, out var key) && !string.IsNullOrWhiteSpace(key))
+        if (Request.Cookies.TryGetValue(CartCookie, out var key) 
+            && !string.IsNullOrWhiteSpace(key))
             return key;
 
         key = Guid.NewGuid().ToString("N");
@@ -90,7 +91,7 @@ public class CartController : ControllerBase
         return Ok();
     }
 
-    // OPTIONAL: call after login to merge guest cart into user cart
+    // call after login to merge guest cart into user cart
     [Authorize]
     [HttpPost("merge")]
     public async Task<IActionResult> Merge(CancellationToken ct)
@@ -102,7 +103,7 @@ public class CartController : ControllerBase
         return Ok();
     }
 
-    // OPTIONAL: checkout (choose whether it requires login)
+    // checkout (choose whether it requires login)
     // If guest checkout is allowed -> remove [Authorize]
     [Authorize]
     [HttpPost("checkout")]
