@@ -119,7 +119,6 @@ public class SellerController:ControllerBase
 
         var seller = await _dbContext.Sellers
             .AsNoTracking()
-            .Include(s => s.Country)
             .FirstOrDefaultAsync(s => s.UserId == user.Id, ct);
 
         var roles = await _userManager.GetRolesAsync(user);
