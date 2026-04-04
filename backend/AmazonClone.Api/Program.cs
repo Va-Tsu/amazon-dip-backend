@@ -102,8 +102,13 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+    string email = "krasutskadiana@gmail.com";
+    string password = "Admin123!";
+    
+    
     string[] roles = { "User", "Admin", "Seller" };
 
     foreach (var role in roles)
@@ -113,6 +118,25 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
+    
+    var user = await userManager.FindByEmailAsync(email);
+
+    if (user == null)
+    {
+        user = new User
+        {
+            UserName = email,
+            Email = email,
+            FullName = "Admin"
+        };
+        await userManager.CreateAsync(user, password);
+    }
+    
+    if (!await userManager.IsInRoleAsync(user, "Admin"))
+    {
+        await userManager.AddToRoleAsync(user, "Admin");
+    }
+
 }
 
 app.UseCors(x => x
