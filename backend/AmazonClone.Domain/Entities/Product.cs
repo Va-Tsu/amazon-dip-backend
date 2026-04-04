@@ -14,9 +14,9 @@ public class Product
     public string? Article { get; set; }
     public decimal Price { get; set; }
     public int CategoryId { get; set; }
-    public Category Category { get; set; } = null!;
+    public Category? Category { get; set; } 
     public int CountryId { get; set; }
-    public Country Country { get; set; } = null!;
+    public Country? Country { get; set; } 
     public bool TrackInventory { get; set; }
     public int StockQuantity { get; set; }
     public int? LowStockTreshold { get; set; }
