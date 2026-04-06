@@ -22,3 +22,7 @@ yarn-error.log*
 
 # Local app settings
 appsettings.Development.json
+
+# Build outputs
+**/bin/
+**/obj/
