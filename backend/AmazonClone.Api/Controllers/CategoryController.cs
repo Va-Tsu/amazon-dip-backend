@@ -22,6 +22,7 @@ public class CategoryController : ControllerBase
         return Ok(await _categoryService.GetAllAsync(ct));
     }
 
+    [HttpGet("{id}/products")]
     public async Task<IActionResult> GetProducts(int id,
         string? brand, bool? isAvailable ,CancellationToken ct,  decimal? minPrice = null,
         decimal? maxPrice = null, int page = 1,
