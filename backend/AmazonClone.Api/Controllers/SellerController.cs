@@ -1,4 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using AmazonClone.Application.Interfaces;
 using AmazonClone.Domain.Entities;
 using AmazonClone.Domain.Enums;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AmazonClone.Api.Controllers;
 
@@ -19,18 +22,22 @@ public class SellerController:ControllerBase
     readonly UserManager<User> _userManager;
     readonly SignInManager<User> _signInManager;
     readonly IProductService _productService;
+    readonly IConfiguration _config;
 
     public SellerController(ApplicationDbContext dbContext,
         UserManager<User> userManager, SignInManager<User> signInManager,
-        IProductService productService)
+        IProductService productService, IConfiguration config)
     {
         _dbContext = dbContext;
         _userManager = userManager;
         _signInManager = signInManager;
         _productService = productService;
+        _config = config;
+       
 
     }
     
+    [Authorize]
     [HttpPost("register")]
     public async Task<ActionResult> RegisterSeller(string fullName,
         string email, string password, string confirmedPassword,
@@ -47,6 +54,10 @@ public class SellerController:ControllerBase
                 
                 return BadRequest("User with such email doesn't exist");
                 
+            }
+            if (password != confirmedPassword)
+            {
+                return BadRequest("Passwords do not match");
             }
             
             var check = await _signInManager.
@@ -90,25 +101,21 @@ public class SellerController:ControllerBase
 
         }
 
-    
     [Authorize]
     [HttpPost("login")]
     public async Task<IActionResult> LoginSeller(string fullName, string email, string password, CancellationToken ct)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrWhiteSpace(userId))
-            return Unauthorized();
-
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-            return Unauthorized();
-
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
             return BadRequest("Email and password are required");
+        }
 
-        if (!string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase))
-            return BadRequest("Entered email does not match current user");
-
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            return Unauthorized("Invalid email");
+        }
+        
         if (!string.IsNullOrWhiteSpace(fullName) &&
             !string.Equals(user.FullName, fullName, StringComparison.OrdinalIgnoreCase))
             return BadRequest("Entered full name does not match current user");
@@ -119,17 +126,46 @@ public class SellerController:ControllerBase
 
         var seller = await _dbContext.Sellers
             .AsNoTracking()
+            .Include(s=>s.User)
             .FirstOrDefaultAsync(s => s.UserId == user.Id, ct);
 
-        var roles = await _userManager.GetRolesAsync(user);
-        var hasSellerRole = roles.Contains("Seller");
-
-        if (seller == null || !hasSellerRole)
+        if (seller == null)
+        {
             return BadRequest("Seller account not found");
+        }
 
+        var roles = await _userManager.GetRolesAsync(user);
+        if (!roles.Contains("Seller"))
+        {
+            return BadRequest("User does not have Seller role");
+        }
+        
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Email, user.Email ?? ""),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+        
+        var jwt = _config.GetSection("Jwt");
+        var getKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!));
+        var creds = new SigningCredentials(getKey, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: jwt["Issuer"],
+            audience: jwt["Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(double.Parse(jwt["ExpireMinutes"])),
+            signingCredentials: creds);
+        
         return Ok(new
         {
             message = "Seller access granted",
+            token = new JwtSecurityTokenHandler().WriteToken(token),
+            expiration = token.ValidTo,
+            roles,
             seller = new
             {
                 seller.Id,
