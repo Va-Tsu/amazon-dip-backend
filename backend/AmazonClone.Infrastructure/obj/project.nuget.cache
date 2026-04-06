@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "JzrZgN7gyKA=",
+  "dgSpecHash": "XErB3vccha3hBSmMuoKed9nhQxV79+ADfBp9gzkVbVPxkkn/nElXXg3kvhsykXsMn2RJOQE1M24Yo7kE/O+kzw==",
   "success": true,
   "projectFilePath": "D:\\RiderProjects\\AmazonClone\\backend\\AmazonClone.Infrastructure\\AmazonClone.Infrastructure.csproj",
   "expectedPackageFiles": [
@@ -83,10 +83,7 @@
     "C:\\Users\\User\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "C:\\Users\\User\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
-    "C:\\Users\\User\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
-    "C:\\Users\\User\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
-    "C:\\Users\\User\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512"
+    "C:\\Users\\User\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }
