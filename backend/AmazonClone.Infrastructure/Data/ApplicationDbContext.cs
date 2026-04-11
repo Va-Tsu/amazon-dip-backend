@@ -115,10 +115,6 @@ public class ApplicationDbContext: IdentityDbContext<User>
             .HasPrecision(18, 2);
         
         builder.Entity<Product>()
-            .Property(p => p.CurrentPrice)
-            .HasPrecision(18, 2);
-        
-        builder.Entity<Product>()
             .Property(p => p.Weight)
             .HasPrecision(18, 2);
         
