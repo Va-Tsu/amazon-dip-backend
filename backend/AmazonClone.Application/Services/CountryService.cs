@@ -60,10 +60,24 @@ public class CountryService:ICountryService
 
         if (!string.IsNullOrWhiteSpace(imageUrl))
         {
+            if (!string.IsNullOrWhiteSpace(country.ImageUrl))
+            {
+                var oldPath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    country.ImageUrl.TrimStart('/')
+                        .Replace('/', Path.DirectorySeparatorChar));
+
+                if (File.Exists(oldPath))
+                {
+                    File.Delete(oldPath);
+                }
+            }
+
             country.ImageUrl = imageUrl;
         }
 
-        if (!string.IsNullOrWhiteSpace(imageUrl))
+        if (!string.IsNullOrWhiteSpace(code))
         {
             country.Code = code;
         }
@@ -79,6 +93,19 @@ public class CountryService:ICountryService
         if (country == null)
         {
             throw new Exception($"Country with id {id} not found");
+        }
+        if (!string.IsNullOrWhiteSpace(country.ImageUrl))
+        {
+            var imagePath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                country.ImageUrl.TrimStart('/')
+                    .Replace('/', Path.DirectorySeparatorChar));
+
+            if (File.Exists(imagePath))
+            {
+                File.Delete(imagePath);
+            }
         }
         
         _dbContext.Countries.Remove(country);
