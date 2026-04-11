@@ -27,7 +27,6 @@ public class Product
     public DateTime? ExpirationDate { get; set; }
     public string? Ingridients { get; set; }
     public string SKU { get; set; } = "";
-    public decimal? CurrentPrice { get; set; }
     public decimal? OldPrice { get; set; }
     public bool HasDiscount { get; set; }
     public Guid? SellerId { get; set; } = default!;
