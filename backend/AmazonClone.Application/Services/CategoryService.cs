@@ -14,7 +14,7 @@ public class CategoryService : ICategoryService
         _dbContext = dbContext;
     }
 
-    public async Task<int> CreateAsync(string name, string imageUrl, CancellationToken ct)
+    public async Task<int> CreateAsync(string name, string? imageUrl, CancellationToken ct)
     {
         var exists = await _dbContext.Categories
             .AnyAsync(c => c.Name == name, ct);
@@ -44,17 +44,23 @@ public class CategoryService : ICategoryService
         {
             throw new Exception($"Category with id {id} not found");
         }
-
-        var exists = await _dbContext.Categories
-            .AnyAsync(c => c.Name == name && c.Id != id, ct);
-        if (exists)
+        
+        if (!string.IsNullOrWhiteSpace(name))
         {
-            throw new Exception($"Category with name {name} already exists");
+            var exists = await _dbContext.Categories
+                .AnyAsync(c => c.Name == name && c.Id != id, ct);
+            if (exists)
+            {
+                throw new Exception($"Category with name {name} already exists");
+            }
+            category.Name = name;
         }
 
-        category.Name = name;
-        category.ImageUrl = imageUrl ?? category.ImageUrl;
-
+        if (!string.IsNullOrWhiteSpace(imageUrl))
+        {
+            category.ImageUrl = imageUrl;
+        }
+        
         await _dbContext.SaveChangesAsync(ct);
     }
 
