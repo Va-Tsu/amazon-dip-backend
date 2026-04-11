@@ -1,6 +1,7 @@
 using AmazonClone.Application.Helpers;
 using AmazonClone.Application.Interfaces;
 using AmazonClone.Domain.Entities;
+using AmazonClone.Domain.Enums;
 using AmazonClone.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -182,34 +183,10 @@ public class ProductService : IProductService
         await _dbContext.SaveChangesAsync(ct);
     }
 
-    public async Task<Guid> CreateAsync(Product product, CancellationToken ct = default)
+    public async Task<Guid> CreateAsync(Product product,List<string> imageUrls, CancellationToken ct = default)
     {
-        var newProductId = Guid.NewGuid();
-
-        var newProduct = new Product
-        {
-            Id = newProductId,
-            Name = product.Name,
-            Brand = product.Brand,
-            Description = product.Description,
-            SKU = product.SKU,
-            Weight = product.Weight,
-            ParcelWeight = product.ParcelWeight,
-            Price = product.Price,
-            CategoryId = product.CategoryId,
-            CountryId = product.CountryId,
-            SellerId = product.SellerId,
-            Ingridients = product.Ingridients,
-            StorageConditions = product.StorageConditions,
-            ExpirationDate = product.ExpirationDate,
-            Article = product.Article,
-            StockQuantity = product.StockQuantity,
-            TrackInventory = product.TrackInventory,
-            IsActive = product.IsActive,
-            CreatedAt = DateTime.UtcNow,
-            Images = new List<ProductImage>()
-        };
-
+        product.Id = Guid.NewGuid();
+        product.CreatedAt = DateTime.UtcNow;
         if (product.Images != null && product.Images.Any())
         {
             var validImages = product.Images
@@ -218,48 +195,53 @@ public class ProductService : IProductService
 
             for (int i = 0; i < validImages.Count; i++)
             {
-                newProduct.Images.Add(new ProductImage
+                product.Images.Add(new ProductImage
                 {
                     Id = Guid.NewGuid(),
-                    ProductId = newProductId,
+                    ProductId = product.Id,
                     Url = validImages[i].Url,
                     SortOrder = i,
                     IsMain = validImages[i].IsMain
                 });
             }
 
-            if (newProduct.Images.Count > 0 && !newProduct.Images.Any(i => i.IsMain))
+            if (product.Images.Count > 0 && !product.Images.Any(i => i.IsMain))
             {
-                newProduct.Images.First().IsMain = true;
+                product.Images.First().IsMain = true;
             }
         }
 
-        _dbContext.Products.Add(newProduct);
+        _dbContext.Products.Add(product);
         await _dbContext.SaveChangesAsync(ct);
 
-        return newProductId;
+        return product.Id;
     }
 
     public async Task<bool> UpdateAsync(
-    Guid id,
-    string? name,
-    string? brand,
-    string? description,
-    string? sku,
-    decimal? price,
-    decimal? weight,
-    decimal? parcelWeight,
-    int? categoryId,
-    int? countryId,
-    string? ingridients,
-    string? storageConditions,
-    DateTime? expirationDate,
-    string? article,
-    int? stockQuantity,
-    bool? trackInventory,
-    List<string>? imageUrls,
-    bool? isActive,
-    CancellationToken ct = default)
+        Guid id,
+        string? name,
+        string? brand,
+        string? description,
+        string? sku,
+        decimal? weight,
+        decimal? parcelWeight,
+        int? categoryId,
+        int? countryId,
+        string? ingridients,
+        string? storageConditions,
+        DateTime? expirationDate,
+        string? article,
+        int? stockQuantity,
+        int? lowStockTreshold,
+        bool? trackInventory,
+        decimal? price,
+        bool? hasDiscount,
+        List<string>? imageUrls,
+        bool? isActive,
+        bool? isPublished,
+        Guid? sellerId,
+        ProductStatus? status,
+        CancellationToken ct)
 {
     var product = await _dbContext.Products
         .Include(p => p.Images)
@@ -279,9 +261,7 @@ public class ProductService : IProductService
 
     if (sku != null)
         product.SKU = sku;
-
-    if (price.HasValue)
-        product.Price = price.Value;
+    
 
     if (weight.HasValue)
         product.Weight = weight.Value;
@@ -310,14 +290,53 @@ public class ProductService : IProductService
     if (stockQuantity.HasValue)
         product.StockQuantity = stockQuantity.Value;
 
+    if (lowStockTreshold.HasValue)
+        product.LowStockTreshold = lowStockTreshold.Value;
+
     if (trackInventory.HasValue)
         product.TrackInventory = trackInventory.Value;
 
+    if (price.HasValue)
+    {
+        product.Price = price.Value;
+    }
+
+    if (hasDiscount.HasValue )
+    {
+        product.HasDiscount = hasDiscount.Value;
+    }
+    
     if (isActive.HasValue)
         product.IsActive = isActive.Value;
 
+    if (isPublished.HasValue)
+        product.IsPublished = isPublished.Value;
+
+    if (sellerId.HasValue)
+        product.SellerId = sellerId.Value;
+
+    if (status.HasValue)
+        product.Status = status.Value;
+
     if (imageUrls != null)
     {
+        foreach (var oldImage in product.Images)
+        {
+            if (!string.IsNullOrWhiteSpace(oldImage.Url))
+            {
+                var oldPath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    oldImage.Url.TrimStart('/')
+                        .Replace('/', Path.DirectorySeparatorChar));
+
+                if (File.Exists(oldPath))
+                {
+                    File.Delete(oldPath);
+                }
+            }
+        }
+
         _dbContext.ProductImages.RemoveRange(product.Images);
         product.Images.Clear();
 
@@ -340,6 +359,7 @@ public class ProductService : IProductService
     }
 
     await _dbContext.SaveChangesAsync(ct);
+
     return true;
 }
     
@@ -347,11 +367,30 @@ public class ProductService : IProductService
     public async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
     {
         var product = await _dbContext.Products
+            .Include(p=>p.Images)
             .FirstOrDefaultAsync(u => u.Id == id, ct);
         if (product == null)
         {
             return false;
         }
+        foreach (var image in product.Images)
+        {
+            if (!string.IsNullOrWhiteSpace(image.Url))
+            {
+                var imagePath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    image.Url.TrimStart('/')
+                        .Replace('/', Path.DirectorySeparatorChar));
+
+                if (File.Exists(imagePath))
+                {
+                    File.Delete(imagePath);
+                }
+            }
+        }
+
+        _dbContext.ProductImages.RemoveRange(product.Images);
         
         _dbContext.Remove(product);
         await _dbContext.SaveChangesAsync(ct);
