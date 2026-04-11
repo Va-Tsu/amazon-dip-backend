@@ -85,7 +85,7 @@ public class CategoryController : ControllerBase
     
     [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id,
+    public async Task<IActionResult> Update([FromForm]int id,
         [FromForm] string? name,
         [FromForm] IFormFile? image, CancellationToken ct)
     {
