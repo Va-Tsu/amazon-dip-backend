@@ -37,9 +37,46 @@ public class CountryController: ControllerBase
     
     [Authorize(Roles = "Admin")]
     [HttpPost("create")]
-    public async Task<IActionResult> Create( Country country, CancellationToken ct)
+    public async Task<IActionResult> Create( [FromForm] string name,
+        [FromForm] IFormFile? image, [FromForm] string? code, CancellationToken ct)
     {
-        var id = await _countryService.CreateAsync(country.Name, country.ImageUrl, country.Code, ct);
+        string? imageUrl = null;
+
+        if (image != null && image.Length > 0)
+        {
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(extension))
+            {
+                return BadRequest("Only .jpg, .jpeg, .png and .webp files are allowed");
+            }
+
+            if (!image.ContentType.StartsWith("image/"))
+            {
+                return BadRequest("The uploaded file must be an image");
+            }
+
+            var folderPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                "images",
+                "countries");
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var filePath = Path.Combine(folderPath, fileName);
+
+            await using var stream = new FileStream(filePath, FileMode.Create);
+            await image.CopyToAsync(stream, ct);
+
+            imageUrl = $"/images/countries/{fileName}";
+        }
+        var id = await _countryService.CreateAsync(name, imageUrl, code, ct);
         return Ok( new
         {
             message = "A country was created",

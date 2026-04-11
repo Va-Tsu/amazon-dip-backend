@@ -14,7 +14,7 @@ public class CountryService:ICountryService
         _dbContext = dbContext;
     }
 
-    public async Task<int> CreateAsync(string name, string imageUrl, string? code, CancellationToken ct)
+    public async Task<int> CreateAsync(string name, string? imageUrl, string? code, CancellationToken ct)
     {
         var exists = await _dbContext.Countries
             .AnyAsync(c=>c.Name == name , ct);
