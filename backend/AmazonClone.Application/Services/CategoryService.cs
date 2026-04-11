@@ -58,6 +58,20 @@ public class CategoryService : ICategoryService
 
         if (!string.IsNullOrWhiteSpace(imageUrl))
         {
+            if (!string.IsNullOrWhiteSpace(category.ImageUrl))
+            {
+                var oldPath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    category.ImageUrl.TrimStart('/')
+                        .Replace('/', Path.DirectorySeparatorChar));
+
+                if (File.Exists(oldPath))
+                {
+                    File.Delete(oldPath);
+                }
+            }
+
             category.ImageUrl = imageUrl;
         }
         
@@ -73,6 +87,20 @@ public class CategoryService : ICategoryService
         {
             throw new Exception($"Category with id {id} not found");
         }
+        if (!string.IsNullOrWhiteSpace(category.ImageUrl))
+        {
+            var imagePath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                category.ImageUrl.TrimStart('/')
+                    .Replace('/', Path.DirectorySeparatorChar));
+
+            if (File.Exists(imagePath))
+            {
+                File.Delete(imagePath);
+            }
+        }
+        
 
         _dbContext.Categories.Remove(category);
         await _dbContext.SaveChangesAsync(ct);
