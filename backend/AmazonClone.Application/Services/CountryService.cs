@@ -46,16 +46,27 @@ public class CountryService:ICountryService
             throw new Exception($"Country with id {id} not found");
         }
         
-        var exists = await _dbContext.Countries
-            .AnyAsync(c => c.Name == name && c.Id!=id, ct);
-        if (exists)
+        if (!string.IsNullOrWhiteSpace(name))
         {
-            throw new Exception($"Country with name {name} already exists");
-        }
+            var exists = await _dbContext.Countries
+                .AnyAsync(c => c.Name == name && c.Id!=id, ct);
+            if (exists)
+            {
+                throw new Exception($"Country with name {name} already exists");
+            }
         
-        country.Name = name;
-        country.ImageUrl = imageUrl ?? country.ImageUrl;
-        country.Code = code;
+            country.Name = name;
+        }
+
+        if (!string.IsNullOrWhiteSpace(imageUrl))
+        {
+            country.ImageUrl = imageUrl;
+        }
+
+        if (!string.IsNullOrWhiteSpace(imageUrl))
+        {
+            country.Code = code;
+        }
         
         await _dbContext.SaveChangesAsync(ct);
     }
