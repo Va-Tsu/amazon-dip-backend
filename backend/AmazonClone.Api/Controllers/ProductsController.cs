@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AmazonClone.Application.Interfaces;
 using AmazonClone.Domain.Entities;
+using AmazonClone.Domain.Enums;
 using AmazonClone.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -94,28 +95,189 @@ public class ProductsController: ControllerBase
     
     [Authorize(Roles = "Admin")]
     [HttpPost("create")]
-    public async Task<IActionResult> Create( Product product, CancellationToken ct)
+    public async Task<IActionResult> Create( [FromForm] string name,
+        [FromForm] string description,
+        [FromForm] string brand,
+        [FromForm] decimal weight,
+        [FromForm] decimal? parcelWeight,
+        [FromForm] string? article,
+        [FromForm] decimal price,
+        [FromForm] int categoryId,
+        [FromForm] int countryId,
+        [FromForm] bool trackInventory,
+        [FromForm] int stockQuantity,
+        [FromForm] int? lowStockTreshold,
+        [FromForm] bool isActive,
+        [FromForm] bool isPublished,
+        [FromForm] string? storageConditions,
+        [FromForm] DateTime? expirationDate,
+        [FromForm] string? ingridients,
+        [FromForm] string sku,
+        [FromForm] decimal? oldPrice,
+        [FromForm] bool hasDiscount,
+        [FromForm] Guid? sellerId,
+        [FromForm] ProductStatus status,
+        [FromForm] List<IFormFile>? images,
+        CancellationToken ct)
     {
-        var id = await _productService.CreateAsync(product, ct);
+        var imageUrls = new List<string>();
+
+        if (images != null && images.Count > 0)
+        {
+            var folderPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                "images",
+                "products");
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+
+            foreach (var image in images)
+            {
+                if (image == null || image.Length == 0)
+                {
+                    continue;
+                }
+
+                var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    return BadRequest("Only .jpg, .jpeg, .png and .webp files are allowed");
+                }
+
+                if (!image.ContentType.StartsWith("image/"))
+                {
+                    return BadRequest("Uploaded file must be an image");
+                }
+
+                var fileName = $"{Guid.NewGuid()}{extension}";
+                var filePath = Path.Combine(folderPath, fileName);
+
+                await using var stream = new FileStream(filePath, FileMode.Create);
+                await image.CopyToAsync(stream, ct);
+
+                imageUrls.Add($"/images/products/{fileName}");
+            }
+        }
+        
+        var product = new Product
+        {
+            Name = name,
+            Description = description,
+            Brand = brand,
+            Weight = weight,
+            ParcelWeight = parcelWeight,
+            Article = article,
+            Price = price,
+            CategoryId = categoryId,
+            CountryId = countryId,
+            TrackInventory = trackInventory,
+            StockQuantity = stockQuantity,
+            LowStockTreshold = lowStockTreshold,
+            CreatedAt = DateTime.UtcNow,
+            IsActive = isActive,
+            IsPublished = isPublished,
+            StorageConditions = storageConditions,
+            ExpirationDate = expirationDate,
+            Ingridients = ingridients,
+            SKU = sku,
+            OldPrice = oldPrice,
+            HasDiscount = hasDiscount,
+            SellerId = sellerId,
+            Status = status
+        };
+        
+        var id = await _productService.CreateAsync(product,imageUrls, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
     [Authorize(Roles = "Admin")]
     [HttpPut("update/{id}")]
-    public async Task<IActionResult> Update(Guid id, string? name, string? brand,
-        string? description, string? sku, decimal? price, decimal? weight,
-        decimal? parcelWeight, int? categoryId, int? countryId, string? ingridients,
-        string? storageConditions, DateTime? expirationDate, string? article,
-        int? stockQuantity, bool? trackInventory, List<string>? imageUrls, bool? isActive,
+    public async Task<IActionResult> Update( Guid id,
+        [FromForm] string? name,
+        [FromForm] string? brand,
+        [FromForm] string? description,
+        [FromForm] string? sku,
+        [FromForm] decimal? price,
+        [FromForm] decimal? weight,
+        [FromForm] decimal? parcelWeight,
+        [FromForm] int? categoryId,
+        [FromForm] int? countryId,
+        [FromForm] string? ingridients,
+        [FromForm] string? storageConditions,
+        [FromForm] DateTime? expirationDate,
+        [FromForm] string? article,
+        [FromForm] int? stockQuantity,
+        [FromForm] int? lowStockTreshold,
+        [FromForm] bool? trackInventory,
+        [FromForm] decimal? currentPrice,
+        [FromForm] decimal? oldPrice,
+        [FromForm] bool? hasDiscount,
+        [FromForm] bool? isActive,
+        [FromForm] bool? isPublished,
+        [FromForm] Guid? sellerId,
+        [FromForm] ProductStatus? status,
+        [FromForm] List<IFormFile>? images,
         CancellationToken ct)
     {
+        var savedImageUrls = new List<string>();
+
+        if (images != null && images.Count > 0)
+        {
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+
+            var folderPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                "images",
+                "products");
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            foreach (var image in images)
+            {
+                if (image == null || image.Length == 0)
+                {
+                    continue;
+                }
+
+                var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    return BadRequest("Only .jpg, .jpeg, .png and .webp files are allowed");
+                }
+
+                if (!image.ContentType.StartsWith("image/"))
+                {
+                    return BadRequest("The uploaded file must be an image");
+                }
+
+                var fileName = $"{Guid.NewGuid()}{extension}";
+                var filePath = Path.Combine(folderPath, fileName);
+
+                await using var stream = new FileStream(filePath, FileMode.Create);
+                await image.CopyToAsync(stream, ct);
+
+                savedImageUrls.Add($"/images/products/{fileName}");
+            }
+        }
+
         var ok = await _productService.UpdateAsync(
             id,
             name,
             brand,
             description,
             sku,
-            price,
             weight,
             parcelWeight,
             categoryId,
@@ -125,9 +287,15 @@ public class ProductsController: ControllerBase
             expirationDate,
             article,
             stockQuantity,
+            lowStockTreshold,
             trackInventory,
-            imageUrls,
+            price,
+            hasDiscount,
+            savedImageUrls,
             isActive,
+            isPublished,
+            sellerId,
+            status,
             ct);
 
         if (!ok)
