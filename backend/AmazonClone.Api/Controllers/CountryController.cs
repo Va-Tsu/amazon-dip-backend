@@ -87,7 +87,7 @@ public class CountryController: ControllerBase
     
     [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromForm]int id,
+    public async Task<IActionResult> Update(int id,
         [FromForm] string? name, [FromForm] IFormFile? image,
         [FromForm] string? code, CancellationToken ct)
     {
