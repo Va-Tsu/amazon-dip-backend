@@ -4,7 +4,7 @@ namespace AmazonClone.Application.Interfaces;
 
 public interface ICountryService
 {
-    Task<int> CreateAsync(string name, string imageUrl, string? code, CancellationToken ct);
+    Task<int> CreateAsync(string name, string? imageUrl, string? code, CancellationToken ct);
     Task UpdateAsync(int id, string? name, string? imageUrl, string? code, CancellationToken ct);
     Task DeleteAsync(int id, CancellationToken ct);
     Task<List<Product>> GetProductByCountryIdAsync(int countryId, string? brand,
