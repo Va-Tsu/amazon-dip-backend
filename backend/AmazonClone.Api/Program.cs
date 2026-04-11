@@ -49,7 +49,12 @@ builder.Services.AddSwaggerGen(c =>
 
 
 builder.Services.AddControllers()
-    .AddApplicationPart(typeof(UserController).Assembly);
+    .AddApplicationPart(typeof(UserController).Assembly)
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });;
 
 
 builder.Services.AddScoped<IEmailService, EmailService>();
