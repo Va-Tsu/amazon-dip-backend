@@ -14,7 +14,7 @@ public static class DiscountHelper
         
         if (activeDiscount == null)
         {
-            product.CurrentPrice = product.Price;
+            //product.CurrentPrice = product.Price;
             product.OldPrice = null;
             product.HasDiscount = false;
 
@@ -23,7 +23,7 @@ public static class DiscountHelper
 
         if (activeDiscount.DiscountPrice.HasValue)
         {
-            product.CurrentPrice = activeDiscount.DiscountPrice.Value;
+            //product.CurrentPrice = activeDiscount.DiscountPrice.Value;
             product.OldPrice = product.Price;
             product.HasDiscount = true;
             return;
@@ -31,14 +31,14 @@ public static class DiscountHelper
 
         if (activeDiscount.DiscountPersentage.HasValue)
         {
-            product.CurrentPrice = product.Price -
-                                   (product.Price*activeDiscount.DiscountPersentage.Value/100m);
+            /*product.CurrentPrice = product.Price -
+                                   (product.Price*activeDiscount.DiscountPersentage.Value/100m);*/
             product.OldPrice = product.Price;
             product.HasDiscount = true;
             return;
         }
         
-        product.CurrentPrice = product.Price;
+        //product.CurrentPrice = product.Price;
         product.OldPrice = null;
         product.HasDiscount = false;
     }
