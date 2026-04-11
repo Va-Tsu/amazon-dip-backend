@@ -4,7 +4,7 @@ namespace AmazonClone.Application.Interfaces;
 
 public interface ICategoryService
 {
-    Task<int> CreateAsync(string name, string imageUrl, CancellationToken ct);
+    Task<int> CreateAsync(string name, string? imageUrl, CancellationToken ct);
     Task UpdateAsync(int id, string? name, string? imageUrl, CancellationToken ct);
     Task DeleteAsync(int id, CancellationToken ct);
     Task<List<Category>> GetAllAsync(CancellationToken ct);
