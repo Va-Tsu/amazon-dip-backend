@@ -27,7 +27,5 @@ ENV ASPNETCORE_HTTP_PORTS=8080
 
 EXPOSE 8080
 
-# ПЕРЕКОНАЙТЕСЬ, що ваш файл дійсно називається Backend.dll
-# Якщо назва проекту інша (наприклад AmazonClone.Api), змініть ім'я файлу нижче
 #ENTRYPOINT ["dotnet", "Backend.dll"]
 ENTRYPOINT ["dotnet", "AmazonClone.Api.dll"]
