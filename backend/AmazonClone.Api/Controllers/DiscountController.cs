@@ -16,46 +16,7 @@ public class DiscountController: ControllerBase
     {
         _discountService = discountService;
     }
-
-    [Authorize(Roles = "Admin")]
-    [HttpPost]
-    public async Task<ActionResult> Create(Guid productId,
-        decimal? discountPrice,
-        int? discountPercentage,
-        DateTime? startDate,
-        DateTime? endDate,
-        CancellationToken ct = default)
-    {
-        var ok = await _discountService.CreateDiscountAsync(
-            productId,
-            discountPrice,
-            discountPercentage,
-            startDate,
-            endDate,
-            ct);
-
-        if (!ok)
-        {
-            return NotFound("Product isn't found");
-        }
-        return Ok("Discount created");
-    }
-
-    [Authorize(Roles = "Admin")]
-    [HttpPut("{discountId}/disable")]
-    public async Task<IActionResult> Disable(Guid discountId,
-        CancellationToken ct = default)
-    {
-        var ok = await _discountService.DisableDiscountAsync(discountId, ct);
-        if (!ok)
-        {
-            return NotFound("Discount isn't found");
-        }
-        
-        return Ok("Discount disabled");
-    }
-
-
+    
     [HttpGet("category{categoryId}")]
     public async Task<IActionResult> GetByCategoryId(int categoryId, CancellationToken ct = default)
     {

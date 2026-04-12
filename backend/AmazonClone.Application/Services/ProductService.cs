@@ -1,4 +1,3 @@
-using AmazonClone.Application.Helpers;
 using AmazonClone.Application.Interfaces;
 using AmazonClone.Domain.Entities;
 using AmazonClone.Domain.Enums;
@@ -29,7 +28,6 @@ public class ProductService : IProductService
     {
         var product = await _dbContext.Products
             .AsNoTracking()
-            .Include(p => p.Discounts)
             .Include(p => p.Category)
             .Include(p => p.Country)
             .Where(p => p.Id == id && p.IsActive)
@@ -39,7 +37,6 @@ public class ProductService : IProductService
         {
             return null;
         }
-        DiscountHelper.ApplyDiscount(product);
         return product;
     }
     
@@ -231,8 +228,6 @@ public class ProductService : IProductService
         string? storageConditions,
         DateTime? expirationDate,
         string? article,
-        int? stockQuantity,
-        int? lowStockTreshold,
         bool? trackInventory,
         decimal? price,
         bool? hasDiscount,
@@ -287,23 +282,21 @@ public class ProductService : IProductService
     if (article != null)
         product.Article = article;
 
-    if (stockQuantity.HasValue)
-        product.StockQuantity = stockQuantity.Value;
-
-    if (lowStockTreshold.HasValue)
-        product.LowStockTreshold = lowStockTreshold.Value;
-
     if (trackInventory.HasValue)
         product.TrackInventory = trackInventory.Value;
 
+    
+
+    if (hasDiscount.HasValue==true && price.HasValue )
+    {
+        product.HasDiscount = hasDiscount.Value;
+        product.OldPrice = product.Price;
+        product.Price = price.Value;
+    }
+    
     if (price.HasValue)
     {
         product.Price = price.Value;
-    }
-
-    if (hasDiscount.HasValue )
-    {
-        product.HasDiscount = hasDiscount.Value;
     }
     
     if (isActive.HasValue)

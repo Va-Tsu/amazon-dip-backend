@@ -20,8 +20,7 @@ public interface IProductService
         Guid id, string? name, string? brand, string? description, string? sku, 
         decimal? weight, decimal? parcelWeight, int? categoryId,
         int? countryId, string? ingridients, string? storageConditions, 
-        DateTime? expirationDate, string? article, int? stockQuantity, 
-        int? lowStockTreshold, bool? trackInventory,
+        DateTime? expirationDate, string? article, bool? trackInventory,
         decimal? price, bool? hasDiscount, List<string>? imageUrls,
         bool? isActive, bool? isPublished, Guid? sellerId, ProductStatus? status,
         CancellationToken ct);

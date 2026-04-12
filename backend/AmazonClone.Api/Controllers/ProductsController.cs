@@ -105,19 +105,16 @@ public class ProductsController: ControllerBase
         [FromForm] int categoryId,
         [FromForm] int countryId,
         [FromForm] bool trackInventory,
-        [FromForm] int stockQuantity,
-        [FromForm] int? lowStockTreshold,
         [FromForm] bool isActive,
         [FromForm] bool isPublished,
         [FromForm] string? storageConditions,
         [FromForm] DateTime? expirationDate,
         [FromForm] string? ingridients,
         [FromForm] string sku,
-        [FromForm] decimal? oldPrice,
-        [FromForm] bool hasDiscount,
         [FromForm] Guid? sellerId,
         [FromForm] ProductStatus status,
         [FromForm] List<IFormFile>? images,
+        [FromForm] decimal? costOfGoods,
         CancellationToken ct)
     {
         var imageUrls = new List<string>();
@@ -178,8 +175,6 @@ public class ProductsController: ControllerBase
             CategoryId = categoryId,
             CountryId = countryId,
             TrackInventory = trackInventory,
-            StockQuantity = stockQuantity,
-            LowStockTreshold = lowStockTreshold,
             CreatedAt = DateTime.UtcNow,
             IsActive = isActive,
             IsPublished = isPublished,
@@ -187,14 +182,25 @@ public class ProductsController: ControllerBase
             ExpirationDate = expirationDate,
             Ingridients = ingridients,
             SKU = sku,
-            OldPrice = oldPrice,
-            HasDiscount = hasDiscount,
+            HasDiscount = false,
             SellerId = sellerId,
             Status = status
         };
         
         var id = await _productService.CreateAsync(product,imageUrls, ct);
-        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        
+        decimal? profit = null;
+        if (costOfGoods.HasValue && costOfGoods.Value < price)
+        {
+            profit = price - costOfGoods;
+        }
+        decimal? margin = null;
+        if (profit != null)
+        {
+            margin = (profit / price) * 100;
+        }
+        
+        return CreatedAtAction(nameof(GetById), new { id, profit, margin });
     }
 
     [Authorize(Roles = "Admin")]
@@ -224,6 +230,7 @@ public class ProductsController: ControllerBase
         [FromForm] Guid? sellerId,
         [FromForm] ProductStatus? status,
         [FromForm] List<IFormFile>? images,
+        [FromForm] decimal? costOfGoods,
         CancellationToken ct)
     {
         var savedImageUrls = new List<string>();
@@ -286,8 +293,6 @@ public class ProductsController: ControllerBase
             storageConditions,
             expirationDate,
             article,
-            stockQuantity,
-            lowStockTreshold,
             trackInventory,
             price,
             hasDiscount,
@@ -301,8 +306,30 @@ public class ProductsController: ControllerBase
         if (!ok)
             return NotFound();
 
-        return Ok("Product updated");
-        
+        decimal? profit = null;
+        if (costOfGoods.HasValue && costOfGoods.Value < price)
+        {
+            profit = price - costOfGoods;
+        }
+
+        decimal? margin = null;
+        if (profit != null)
+        {
+            margin = (profit / price) * 100;
+        }
+
+
+        return Ok(
+            new
+            {
+                message = "Product updated",
+                calcullation = new
+                {
+                    profit,
+                    margin
+                }
+            });
+
     }
     
     [Authorize(Roles = "Admin")]
@@ -313,4 +340,6 @@ public class ProductsController: ControllerBase
         return ok ? NoContent() : NotFound();
         
     }
+
+    
 }

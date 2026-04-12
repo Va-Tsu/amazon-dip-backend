@@ -272,12 +272,6 @@ public class SellerController:ControllerBase
                 seller.PandingBalance,
                 seller.CreatedAt,
                 seller.Country,
-                /*country= seller.Country == null ? null: new
-                {
-                    seller.Country.Id,
-                    seller.Country.Name,
-                    seller.Country.Code
-                },*/
                 user = seller.User == null? null : new 
                 {
                     seller.User.Id,
@@ -356,18 +350,15 @@ public class SellerController:ControllerBase
         [FromForm] int categoryId,
         [FromForm] int countryId,
         [FromForm] bool trackInventory,
-        [FromForm] int stockQuantity,
-        [FromForm] int? lowStockTreshold,
         [FromForm] bool isActive,
         [FromForm] bool isPublished,
         [FromForm] string? storageConditions,
         [FromForm] DateTime? expirationDate,
         [FromForm] string? ingridients,
         [FromForm] string sku,
-        [FromForm] decimal? oldPrice,
-        [FromForm] bool hasDiscount,
         [FromForm] ProductStatus status,
         [FromForm] List<IFormFile>? images,
+        [FromForm] decimal? costOfGoods,
         CancellationToken ct)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -438,8 +429,6 @@ public class SellerController:ControllerBase
             CategoryId = categoryId,
             CountryId = countryId,
             TrackInventory = trackInventory,
-            StockQuantity = stockQuantity,
-            LowStockTreshold = lowStockTreshold,
             CreatedAt = DateTime.UtcNow,
             IsActive = isActive,
             IsPublished = isPublished,
@@ -447,41 +436,51 @@ public class SellerController:ControllerBase
             ExpirationDate = expirationDate,
             Ingridients = ingridients,
             SKU = sku,
-            OldPrice = oldPrice,
-            HasDiscount = hasDiscount,
+            HasDiscount = false,
             SellerId = seller.Id,
             Status = status
         };
         
         var id = await _productService.CreateAsync(product, imageUrls, ct);
-        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        
+        decimal? profit = null;
+        if (costOfGoods.HasValue && costOfGoods.Value < price)
+        {
+            profit = price - costOfGoods;
+        }
+        decimal? margin = null;
+        if (profit != null)
+        {
+            margin = (profit / price) * 100;
+        }
+        
+        return CreatedAtAction(nameof(GetById), new { id, profit, margin });
     }
     
     [Authorize(Roles = "Seller")]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(
         Guid id,
-        [FromForm] string? name,
-        [FromForm] string? brand,
-        [FromForm] string? description,
-        [FromForm] string? sku,
-        [FromForm] decimal? weight,
+        [FromForm]string name,
+        [FromForm] string description,
+        [FromForm] string brand,
+        [FromForm] decimal weight,
         [FromForm] decimal? parcelWeight,
-        [FromForm] int? categoryId,
-        [FromForm] int? countryId,
-        [FromForm] string? ingridients,
+        [FromForm] string? article,
+        [FromForm] decimal price,
+        [FromForm] int categoryId,
+        [FromForm] int countryId,
+        [FromForm] bool trackInventory,
+        [FromForm] bool isActive,
+        [FromForm] bool isPublished,
         [FromForm] string? storageConditions,
         [FromForm] DateTime? expirationDate,
-        [FromForm] string? article,
-        [FromForm] int? stockQuantity,
-        [FromForm] int? lowStockTreshold,
-        [FromForm] bool? trackInventory,
-        [FromForm] decimal? price,
-        [FromForm] bool? hasDiscount,
+        [FromForm] string? ingridients,
+        [FromForm] bool hasDiscount,
+        [FromForm] string sku,
+        [FromForm] ProductStatus status,
         [FromForm] List<IFormFile>? images,
-        [FromForm] bool? isActive,
-        [FromForm] bool? isPublished,
-        [FromForm] ProductStatus? status,
+        [FromForm] decimal? costOfGoods,
         CancellationToken ct)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -564,8 +563,6 @@ public class SellerController:ControllerBase
             storageConditions,
             expirationDate,
             article,
-            stockQuantity,
-            lowStockTreshold,
             trackInventory,
             price,
             hasDiscount,
@@ -579,8 +576,28 @@ public class SellerController:ControllerBase
 
         if (!ok)
             return NotFound();
+        
+        decimal? profit = null;
+        if (costOfGoods.HasValue && costOfGoods.Value < price)
+        {
+            profit = price - costOfGoods;
+        }
+        decimal? margin = null;
+        if (profit != null)
+        {
+            margin = (profit / price) * 100;
+        }
 
-        return Ok("Product updated");
+        return Ok(
+            new
+            {
+                message = "Product updated",
+                calcullation = new
+                {
+                    profit,
+                    margin
+                }
+            });
     }
 
     [Authorize(Roles = "Seller")]
