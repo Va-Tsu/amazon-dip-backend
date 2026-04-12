@@ -34,7 +34,7 @@ public class Product
     public ProductStatus Status { get; set; }
     
     public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
-    public ICollection<Discount> Discounts { get; set; } = new List<Discount>();
+    
     public ICollection<ProductComment> Comments { get; set; } = new List<ProductComment>();
     public ICollection<ProductParameter> Parameters { get; set; } = new List<ProductParameter>();
     public ICollection<OrderItem>OrderItems { get; set; } = new List<OrderItem>();
