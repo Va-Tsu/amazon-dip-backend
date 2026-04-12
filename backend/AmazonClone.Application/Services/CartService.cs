@@ -44,7 +44,7 @@ public class CartService : ICartService
     {
         if (quantity <= 0) throw new ArgumentOutOfRangeException(nameof(quantity));
 
-        var product = await _dbContext.Products.FindAsync(new object[] { productId }, ct)
+        var product = await _dbContext.Products.FirstOrDefaultAsync(p=>p.Id==productId, ct)
                       ?? throw new Exception("Product not found");
 
         var cart = await GetOrCreateCartAsync(userId, cartKey, ct);
@@ -66,7 +66,15 @@ public class CartService : ICartService
             });
         }
 
-        await _dbContext.SaveChangesAsync(ct);
+        try
+        {
+            await _dbContext.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new Exception("Cart was modified by another request. Please retry.");
+        }
+        
     }
 
     public async Task UpdateItemAsync(string? userId, string cartKey, Guid cartItemId, int quantity, CancellationToken ct = default)
@@ -177,12 +185,11 @@ public class CartService : ICartService
         {
             Id = Guid.NewGuid(),
             UserId = string.IsNullOrWhiteSpace(userId) ? null : userId,
-            CartKey = cartKey,
+            CartKey = string.IsNullOrWhiteSpace(userId) ? cartKey:null,
             Items = new List<CartItem>()
         };
 
         _dbContext.Carts.Add(cart);
-        await _dbContext.SaveChangesAsync(ct);
         return cart;
     }
 
