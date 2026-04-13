@@ -20,6 +20,7 @@ public class DiscountService : IDiscountService
         var products = await _dbContext.Products
             .AsNoTracking()
             .Where(p => p.IsActive && p.CategoryId == categoryId && p.HasDiscount == true)
+            .Include(p=>p.Images)
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync(ct);
         
@@ -31,6 +32,7 @@ public class DiscountService : IDiscountService
         var products = await _dbContext.Products
             .Where(p => p.IsActive && p.CountryId == countryId && p.HasDiscount == true)
             .OrderByDescending(p => p.CreatedAt)
+            .Include(p=>p.Images)
             .ToListAsync(ct);
         
         return products;
