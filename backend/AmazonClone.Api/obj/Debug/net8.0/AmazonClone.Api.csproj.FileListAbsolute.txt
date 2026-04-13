@@ -162,3 +162,4 @@ D:\RiderProjects\AmazonClone\backend\AmazonClone.Api\obj\Debug\net8.0\staticweba
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Api\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.AmazonClone.Api.props
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Api\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.AmazonClone.Api.props
 D:\RiderProjects\AmazonClone\backend\AmazonClone.Api\obj\Debug\net8.0\staticwebassets.pack.json
+D:\RiderProjects\AmazonClone\backend\AmazonClone.Api\obj\Debug\net8.0\rpswa.dswa.cache.json
