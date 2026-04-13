@@ -20,6 +20,7 @@ public class ProductService : IProductService
         return await _dbContext.Products
             .Include(p => p.Category)
             .Include(p => p.Country)
+            .Include(p=>p.Images)
             .Where(p => p.IsActive)
             .ToListAsync();
     }
@@ -30,6 +31,9 @@ public class ProductService : IProductService
             .AsNoTracking()
             .Include(p => p.Category)
             .Include(p => p.Country)
+            .Include(p=>p.Comments)
+            .Include(p=>p.Parameters)
+            .Include(p=>p.Images)
             .Where(p => p.Id == id && p.IsActive)
             .FirstOrDefaultAsync(ct);
 
