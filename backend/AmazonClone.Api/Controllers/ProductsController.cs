@@ -200,7 +200,7 @@ public class ProductsController: ControllerBase
             margin = (profit / price) * 100;
         }
         
-        return CreatedAtAction(nameof(GetById), new { id, profit, margin });
+        return CreatedAtAction(nameof(GetById), new { id }, new { id, profit, margin });
     }
 
     [Authorize(Roles = "Admin")]
