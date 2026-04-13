@@ -144,7 +144,7 @@ public class CategoryService : ICategoryService
         }
 
         query = query.Skip((page - 1) * pageSize).Take(pageSize);
-        return await query.ToListAsync();
+        return await query.Include(p=>p.Images).ToListAsync();
 
     }
 }
