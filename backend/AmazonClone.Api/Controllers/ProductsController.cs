@@ -192,12 +192,12 @@ public class ProductsController: ControllerBase
         decimal? profit = null;
         if (costOfGoods.HasValue && costOfGoods.Value < price)
         {
-            profit = price - costOfGoods;
+            profit = price - costOfGoods.Value;
         }
         decimal? margin = null;
-        if (profit != null)
+        if (profit.HasValue && price>0)
         {
-            margin = (profit / price) * 100;
+            margin = (profit.Value / price) * 100;
         }
         
         return CreatedAtAction(nameof(GetById), new { id }, new { id, profit, margin });
@@ -309,13 +309,12 @@ public class ProductsController: ControllerBase
         decimal? profit = null;
         if (costOfGoods.HasValue && costOfGoods.Value < price)
         {
-            profit = price - costOfGoods;
+            profit = price - costOfGoods.Value;
         }
-
         decimal? margin = null;
-        if (profit != null)
+        if (profit.HasValue && price>0)
         {
-            margin = (profit / price) * 100;
+            margin = (profit.Value / price) * 100;
         }
 
 
