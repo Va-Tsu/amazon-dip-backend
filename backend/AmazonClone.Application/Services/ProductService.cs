@@ -188,29 +188,25 @@ public class ProductService : IProductService
     {
         product.Id = Guid.NewGuid();
         product.CreatedAt = DateTime.UtcNow;
-        if (product.Images != null && product.Images.Any())
+        if (imageUrls != null && imageUrls.Any())
         {
-            var validImages = product.Images
-                .Where(i => !string.IsNullOrWhiteSpace(i.Url))
-                .ToList();
-
-            for (int i = 0; i < validImages.Count; i++)
+            for (int i = 0; i < imageUrls.Count; i++)
             {
+                if (string.IsNullOrWhiteSpace(imageUrls[i]))
+                    continue;
+
                 product.Images.Add(new ProductImage
                 {
                     Id = Guid.NewGuid(),
                     ProductId = product.Id,
-                    Url = validImages[i].Url,
+                    Url = imageUrls[i],
                     SortOrder = i,
-                    IsMain = validImages[i].IsMain
+                    IsMain = i == 0
                 });
             }
-
-            if (product.Images.Count > 0 && !product.Images.Any(i => i.IsMain))
-            {
-                product.Images.First().IsMain = true;
-            }
         }
+
+            
 
         _dbContext.Products.Add(product);
         await _dbContext.SaveChangesAsync(ct);
