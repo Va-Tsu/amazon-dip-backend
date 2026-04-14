@@ -49,6 +49,7 @@ public class ProductService : IProductService
         return await _dbContext.Products
             .Include(p => p.Category)
             .Include(p => p.Country)
+            .Include(p=>p.Images)
             .Where(p => p.Name.Contains(query) && p.IsActive)
             .ToListAsync();
     }
@@ -58,6 +59,7 @@ public class ProductService : IProductService
         return await _dbContext.Products
             .Include(p => p.Category)
             .Include(p => p.Country)
+            .Include(p=>p.Images)
             .Where(p => p.CreatedAt > DateTime.UtcNow.AddDays(-14))
             .ToListAsync();
     }
@@ -71,6 +73,7 @@ public class ProductService : IProductService
         var skip = (page - 1) * pageSize;
         var query = _dbContext.Products
             .AsNoTracking()
+            .Include(p=>p.Images)
             .Where(p => p.IsActive);
         if (string.IsNullOrEmpty(userId))
         {
