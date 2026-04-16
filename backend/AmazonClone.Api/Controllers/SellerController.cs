@@ -341,7 +341,7 @@ public class SellerController:ControllerBase
     [Authorize(Roles = "Seller")]
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromForm] string name,
-        [FromForm] string description,
+        [FromForm] string? description,
         [FromForm] string brand,
         [FromForm] decimal weight,
         [FromForm] decimal? parcelWeight,
