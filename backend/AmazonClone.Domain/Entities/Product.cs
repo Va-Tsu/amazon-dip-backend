@@ -7,7 +7,7 @@ public class Product
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
     public string Brand { get; set; }
     public decimal Weight { get; set; }
     public decimal? ParcelWeight { get; set; }
