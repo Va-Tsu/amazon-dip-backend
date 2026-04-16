@@ -96,7 +96,7 @@ public class ProductsController: ControllerBase
     [Authorize(Roles = "Admin")]
     [HttpPost("create")]
     public async Task<IActionResult> Create( [FromForm] string name,
-        [FromForm] string description,
+        [FromForm] string? description,
         [FromForm] string brand,
         [FromForm] decimal weight,
         [FromForm] decimal? parcelWeight,
